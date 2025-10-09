@@ -20,8 +20,8 @@ Environment=WEBHOOK_URL=https://n8n.albandiguer.dev/
 Environment=N8N_EDITOR_BASE_URL=http://n8n.lab.albandiguer.dev/
 Environment=N8N_SECURE_COOKIE=false
 Environment=N8N_PROXY_HOPS=1
-# Persist data on Hetzner Cloud volume
-Volume=/mnt/HC_Volume_103621273/n8n/data:/home/node/.n8n
+# Persist data on configured storage volume
+Volume=${QUADLET_STORAGE_PATH}/n8n/data:/home/node/.n8n
 Network=podman
 
 [Service]

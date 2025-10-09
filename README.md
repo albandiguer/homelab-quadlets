@@ -275,18 +275,38 @@ dig @localhost google.com
 journalctl --user -u pihole.service -f
 ```
 
-## Volume Setup
+## Configuration
+
+### Storage Path
+
+All services use the `QUADLET_STORAGE_PATH` environment variable for persistent storage. This is configured in `config/.config/environment.d/quadlets.conf`:
+
+```bash
+QUADLET_STORAGE_PATH=/mnt/HC_Volume_103621273
+```
+
+**To use a different storage location:**
+
+1. Edit `config/.config/environment.d/quadlets.conf` and change the path
+2. Redeploy the config: `stow --target="$HOME" --restow config`
+3. Reload systemd: `systemctl --user daemon-reload`
+4. Restart services to pick up the new path
+
+### Volume Setup
 
 On first deployment, create volume directories:
 
 ```bash
-mkdir -p /mnt/HC_Volume_103621273/{n8n,pihole,caddy,linkding,mcp-hub,cloudflared,mealie}/{data,etc,config,dnsmasq.d}
+# Use your configured storage path
+STORAGE_PATH=/mnt/HC_Volume_103621273
+
+mkdir -p $STORAGE_PATH/{n8n,pihole,caddy,linkding,mcp-hub,cloudflared,mealie}/{data,etc,config,dnsmasq.d}
 
 # n8n runs as UID 1000, maps to host UID 100999 in rootless podman
-chown -R 100999:100999 /mnt/HC_Volume_103621273/n8n/data
+chown -R 100999:100999 $STORAGE_PATH/n8n/data
 
 # Other services owned by podman user
-chown -R $(id -u):$(id -g) /mnt/HC_Volume_103621273/{pihole,caddy,linkding,mcp-hub,cloudflared,mealie}
+chown -R $(id -u):$(id -g) $STORAGE_PATH/{pihole,caddy,linkding,mcp-hub,cloudflared,mealie}
 ```
 
 ## Resources

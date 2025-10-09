@@ -11,9 +11,9 @@ Network=host
 # Mount Caddyfile
 Volume=/opt/homelab/quadlets/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
 
-# Persistent volumes for certificates and config on Hetzner Cloud volume
-Volume=/mnt/HC_Volume_103621273/caddy/data:/data
-Volume=/mnt/HC_Volume_103621273/caddy/config:/config
+# Persistent volumes for certificates and config on configured storage volume
+Volume=${QUADLET_STORAGE_PATH}/caddy/data:/data
+Volume=${QUADLET_STORAGE_PATH}/caddy/config:/config
 
 # Health check
 HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1

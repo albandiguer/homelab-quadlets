@@ -19,9 +19,9 @@ Environment=FTLCONF_dns_upstreams=1.1.1.1;1.0.0.1
 Environment=FTLCONF_misc_dnsmasq_lines=address=/.lab/10.0.0.1;address=/.lab.albandiguer.dev/10.0.0.1;address=/.home.arpa/10.0.0.1
 Environment=FTLCONF_webserver_port=8053
 
-# Volumes for persistent data on Hetzner Cloud volume
-Volume=/mnt/HC_Volume_103621273/pihole/etc:/etc/pihole
-Volume=/mnt/HC_Volume_103621273/pihole/dnsmasq.d:/etc/dnsmasq.d
+# Volumes for persistent data on configured storage volume
+Volume=${QUADLET_STORAGE_PATH}/pihole/etc:/etc/pihole
+Volume=${QUADLET_STORAGE_PATH}/pihole/dnsmasq.d:/etc/dnsmasq.d
 
 # Health check
 HealthCmd=/usr/bin/dig +short +norecurse +retry=0 @127.0.0.1 pi.hole

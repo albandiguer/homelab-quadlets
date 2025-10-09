@@ -10,7 +10,7 @@ Secret=linkding_superuser_name,type=env,target=LD_SUPERUSER_NAME
 Secret=linkding_superuser_password,type=env,target=LD_SUPERUSER_PASSWORD
 Environment=LD_DISABLE_BACKGROUND_TASKS=False
 Environment=LD_DISABLE_URL_VALIDATION=False
-Volume=/mnt/HC_Volume_103621273/linkding/data:/etc/linkding/data
+Volume=${QUADLET_STORAGE_PATH}/linkding/data:/etc/linkding/data
 Network=podman
 
 [Service]

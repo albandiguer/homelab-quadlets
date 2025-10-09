@@ -17,7 +17,7 @@ Environment=TZ=UTC
 Environment=MAX_WORKERS=1
 Environment=WEB_CONCURRENCY=1
 Environment=BASE_URL=http://mealie.lab
-Volume=/mnt/HC_Volume_103621273/mealie/data:/app/data
+Volume=${QUADLET_STORAGE_PATH}/mealie/data:/app/data
 Network=podman
 
 [Service]
