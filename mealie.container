@@ -1,0 +1,25 @@
+[Unit]
+Description=Mealie Recipe Manager
+After=network-online.target
+
+[Container]
+Image=ghcr.io/mealie-recipes/mealie:latest
+ContainerName=mealie
+PublishPort=9000:9000
+EnvironmentFile=/opt/homelab/quadlets/mealie/.env
+Environment=ALLOW_SIGNUP=true
+Environment=PUID=1000
+Environment=PGID=1000
+Environment=TZ=UTC
+Environment=MAX_WORKERS=1
+Environment=WEB_CONCURRENCY=1
+Environment=BASE_URL=http://mealie.lab
+Volume=/mnt/HC_Volume_103621273/mealie/data:/app/data
+Network=podman
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target

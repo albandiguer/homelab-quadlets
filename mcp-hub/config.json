@@ -1,0 +1,21 @@
+{
+	"servers": {
+		"mdn-lookup": {
+			"disabled": false,
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@babymanisha/mdn-mcp"
+			],
+			"env": {}
+		}
+	},
+	"auth": {
+		"type": "none"
+	},
+	"cors": {
+		"enabled": true,
+		"origin": "*"
+	}
+}

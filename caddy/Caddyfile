@@ -1,0 +1,39 @@
+# Caddy reverse proxy configuration
+# All services accessible via *.lab and *.lab.albandiguer.dev domains through VPN
+
+# Global options to disable automatic HTTPS
+{
+    auto_https off
+    admin off
+}
+
+# Health check endpoint
+http://:80/health {
+    respond "OK" 200
+}
+
+# Active services
+http://pihole.lab, http://pihole.lab.albandiguer.dev {
+    redir / /admin
+    reverse_proxy localhost:8053
+}
+
+http://linkding.lab, http://linkding.lab.albandiguer.dev {
+    reverse_proxy localhost:9090
+}
+
+http://n8n.lab, http://n8n.lab.albandiguer.dev, http://n8n.albandiguer.dev {
+    reverse_proxy localhost:5678
+}
+
+http://mcp-hub.lab, http://mcp-hub.lab.albandiguer.dev {
+    reverse_proxy localhost:3000
+}
+
+http://readeck.lab, http://readeck.lab.albandiguer.dev {
+    reverse_proxy localhost:8000
+}
+
+http://mealie.lab, http://mealie.lab.albandiguer.dev {
+    reverse_proxy localhost:9000
+}

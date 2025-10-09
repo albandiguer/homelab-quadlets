@@ -1,0 +1,31 @@
+[Unit]
+Description=n8n Workflow Automation
+After=network-online.target
+
+[Container]
+Image=docker.n8n.io/n8nio/n8n:latest
+ContainerName=n8n
+PublishPort=5678:5678
+EnvironmentFile=/opt/homelab/quadlets/n8n/.env
+Environment=GENERIC_TIMEZONE=UTC
+Environment=TZ=UTC
+Environment=N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+Environment=N8N_RUNNERS_ENABLED=true
+Environment=N8N_BASIC_AUTH_ACTIVE=true
+Environment=N8N_HOST=n8n.albandiguer.dev
+Environment=N8N_PORT=5678
+Environment=N8N_PROTOCOL=https
+Environment=WEBHOOK_URL=https://n8n.albandiguer.dev/
+Environment=N8N_EDITOR_BASE_URL=http://n8n.lab.albandiguer.dev/
+Environment=N8N_SECURE_COOKIE=false
+Environment=N8N_PROXY_HOPS=1
+# Persist data on Hetzner Cloud volume
+Volume=/mnt/HC_Volume_103621273/n8n/data:/home/node/.n8n
+Network=podman
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target

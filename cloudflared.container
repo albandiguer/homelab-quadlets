@@ -1,0 +1,25 @@
+[Unit]
+Description=Cloudflare Tunnel
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/cloudflare/cloudflared:latest
+ContainerName=cloudflared
+# Run tunnel with token from environment variable
+Exec=tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+
+# Use host network to access Caddy on localhost:80
+Network=host
+
+# Automatic container updates
+AutoUpdate=registry
+
+[Service]
+EnvironmentFile=/opt/homelab/quadlets/cloudflared/.env
+Restart=always
+RestartSec=30
+TimeoutStartSec=120
+
+[Install]
+WantedBy=default.target

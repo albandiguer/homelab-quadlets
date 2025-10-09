@@ -1,0 +1,29 @@
+[Unit]
+Description=Caddy Reverse Proxy
+After=network-online.target
+
+[Container]
+Image=docker.io/library/caddy:latest
+ContainerName=caddy
+# For rootless, using host network since we allowed port 80
+Network=host
+
+# Mount Caddyfile
+Volume=/opt/homelab/quadlets/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+
+# Persistent volumes for certificates and config on Hetzner Cloud volume
+Volume=/mnt/HC_Volume_103621273/caddy/data:/data
+Volume=/mnt/HC_Volume_103621273/caddy/config:/config
+
+# Health check
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target default.target

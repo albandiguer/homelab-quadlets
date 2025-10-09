@@ -1,0 +1,20 @@
+[Unit]
+Description=Linkding Bookmark Manager
+After=network-online.target
+
+[Container]
+Image=docker.io/sissbruecker/linkding:latest
+ContainerName=linkding
+PublishPort=9090:9090
+EnvironmentFile=/opt/homelab/quadlets/linkding/.env
+Environment=LD_DISABLE_BACKGROUND_TASKS=False
+Environment=LD_DISABLE_URL_VALIDATION=False
+Volume=/mnt/HC_Volume_103621273/linkding/data:/etc/linkding/data
+Network=podman
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target

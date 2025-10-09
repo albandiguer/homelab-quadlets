@@ -1,0 +1,27 @@
+[Unit]
+Description=Readeck Read-it-later
+After=network-online.target
+
+[Container]
+Image=codeberg.org/readeck/readeck:latest
+ContainerName=readeck
+PublishPort=8000:8000
+
+# Persistent data on Hetzner Cloud volume
+Volume=/mnt/HC_Volume_103621273/readeck:/readeck
+
+# Configure base URL for HTTP access via reverse proxy
+Environment=READECK_SERVER_BASE_URL=http://readeck.lab
+
+# Health check
+HealthCmd=/bin/sh -c "wget --no-verbose --tries=1 --spider http://localhost:8000/ || exit 1"
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target default.target
