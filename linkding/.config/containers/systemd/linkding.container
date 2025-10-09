@@ -6,7 +6,8 @@ After=network-online.target
 Image=docker.io/sissbruecker/linkding:latest
 ContainerName=linkding
 PublishPort=9090:9090
-EnvironmentFile=/opt/homelab/quadlets/linkding/.env
+Secret=linkding_superuser_name,type=env,target=LD_SUPERUSER_NAME
+Secret=linkding_superuser_password,type=env,target=LD_SUPERUSER_PASSWORD
 Environment=LD_DISABLE_BACKGROUND_TASKS=False
 Environment=LD_DISABLE_URL_VALIDATION=False
 Volume=/mnt/HC_Volume_103621273/linkding/data:/etc/linkding/data

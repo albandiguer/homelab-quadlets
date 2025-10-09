@@ -6,7 +6,10 @@ After=network-online.target
 Image=ghcr.io/mealie-recipes/mealie:latest
 ContainerName=mealie
 PublishPort=9000:9000
-EnvironmentFile=/opt/homelab/quadlets/mealie/.env
+Secret=mealie_default_email,type=env,target=DEFAULT_EMAIL
+Secret=mealie_default_password,type=env,target=DEFAULT_PASSWORD
+Environment=DEFAULT_GROUP=Home
+Environment=DEFAULT_HOUSEHOLD=Home
 Environment=ALLOW_SIGNUP=true
 Environment=PUID=1000
 Environment=PGID=1000

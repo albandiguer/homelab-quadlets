@@ -6,7 +6,8 @@ After=network-online.target
 Image=docker.n8n.io/n8nio/n8n:latest
 ContainerName=n8n
 PublishPort=5678:5678
-EnvironmentFile=/opt/homelab/quadlets/n8n/.env
+Secret=n8n_basic_auth_user,type=env,target=N8N_BASIC_AUTH_USER
+Secret=n8n_basic_auth_password,type=env,target=N8N_BASIC_AUTH_PASSWORD
 Environment=GENERIC_TIMEZONE=UTC
 Environment=TZ=UTC
 Environment=N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true

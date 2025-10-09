@@ -8,7 +8,7 @@ ContainerName=pihole
 # For rootless, we'll use host network mode since we need port 53
 # This works because we set net.ipv4.ip_unprivileged_port_start=53
 Network=host
-EnvironmentFile=/opt/homelab/quadlets/pihole/.env
+Secret=pihole_webpassword,type=env,target=FTLCONF_webserver_api_password
 
 # Timezone
 Environment=TZ=UTC
