@@ -41,8 +41,9 @@ http://mealie.lab, http://mealie.lab.albandiguer.dev {
 # Uptime kuma
 http://uptime.lab, http://uptime.lab.albandiguer.dev {
     reverse_proxy localhost:3001 {
-        header_up X-Real-IP {remote_host}
-        header_up X-Forwarded-For {remote_host}
+        transport http {
+            versions h2c 1.1
+        }
     }
 }
 
