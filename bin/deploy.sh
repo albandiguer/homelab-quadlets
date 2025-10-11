@@ -36,6 +36,7 @@ echo ""
 echo "✓ Services deployed successfully"
 echo ""
 echo "Reloading systemd user daemon..."
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 systemctl --user daemon-reload
 
 echo ""
