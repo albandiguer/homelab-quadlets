@@ -25,6 +25,8 @@ fi
 
 SERVICE_NAME="$1"
 
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+
 echo "Restarting $SERVICE_NAME service..."
 systemctl --user restart "${SERVICE_NAME}.service"
 
