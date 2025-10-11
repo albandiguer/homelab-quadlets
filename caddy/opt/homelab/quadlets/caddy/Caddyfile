@@ -37,3 +37,11 @@ http://readeck.lab, http://readeck.lab.albandiguer.dev {
 http://mealie.lab, http://mealie.lab.albandiguer.dev {
     reverse_proxy localhost:9000
 }
+
+http://uptime-kuma.lab, http://uptime-kuma.lab.albandiguer.dev {
+    reverse_proxy localhost:3001
+}
+
+http://homepage.lab, http://homepage.lab.albandiguer.dev {
+    reverse_proxy localhost:3030
+}

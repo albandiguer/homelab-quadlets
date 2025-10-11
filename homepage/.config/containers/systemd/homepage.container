@@ -1,0 +1,26 @@
+[Unit]
+Description=Homepage dashboard
+After=network-online.target
+
+[Container]
+Image=ghcr.io/gethomepage/homepage:latest
+ContainerName=homepage
+Environment=PUID=1000 PGID=1000
+PublishPort=3030:3000
+
+# Persistent volume on mounted hcloud volume
+Volume=/mnt/homepage:/app/config
+
+# Health check
+HealthCmd=nc -z localhost 3000 || exit 1
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+HealthStartPeriod=30s
+
+[Service]
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target default.target

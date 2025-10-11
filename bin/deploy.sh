@@ -7,7 +7,7 @@ set -e
 #   ./deploy.sh              # Deploy all services
 #   ./deploy.sh pihole caddy # Deploy specific services
 
-SERVICES=(config pihole caddy linkding n8n mcp-hub cloudflared mealie readeck)
+SERVICES=(config pihole caddy linkding n8n mcp-hub cloudflared mealie readeck uptime-kuma homepage)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 QUADLETS_DIR="$(dirname "$SCRIPT_DIR")"
 
