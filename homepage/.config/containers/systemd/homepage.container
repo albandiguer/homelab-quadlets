@@ -9,7 +9,7 @@ Environment=PUID=1000 PGID=1000
 PublishPort=3030:3000
 
 # Persistent volume on mounted hcloud volume
-Volume=/mnt/homepage:/app/config
+Volume=${QUADLET_STORAGE_PATH}/homepage:/app/config
 
 # Health check
 HealthCmd=nc -z localhost 3000 || exit 1

@@ -12,7 +12,7 @@ Exec=/bin/sh -c "npm install -g mcp-hub && mcp-hub --port 3000 --config /config/
 # Mount configuration from local directory
 Volume=/opt/homelab/quadlets/mcp-hub/config.json:/config/config.json:ro
 # Persist MCP server data on Hetzner Cloud volume
-Volume=/mnt/HC_Volume_103621273/mcp-hub/data:/data
+Volume=${QUADLET_STORAGE_PATH}/mcp-hub/data:/data
 Network=podman
 
 [Service]

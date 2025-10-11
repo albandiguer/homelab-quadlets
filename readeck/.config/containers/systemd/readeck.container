@@ -8,7 +8,7 @@ ContainerName=readeck
 PublishPort=8000:8000
 
 # Persistent data on Hetzner Cloud volume
-Volume=/mnt/HC_Volume_103621273/readeck:/readeck
+Volume=${QUADLET_STORAGE_PATH}/readeck:/readeck
 
 # Configure base URL for HTTP access via reverse proxy
 Environment=READECK_SERVER_BASE_URL=http://readeck.lab
