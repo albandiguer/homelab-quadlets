@@ -1,35 +1,33 @@
 #!/bin/bash
 set -e
 
-# Deploy quadlet services using GNU Stow
-# Usage: ./deploy.sh [service...]
-# Examples:
-#   ./deploy.sh              # Deploy all services
-#   ./deploy.sh pihole caddy # Deploy specific services
+# Deploy quadlet services from Git repository using GNU Stow
+# This script should be run on the server (as podman user)
+# Usage: ssh hetzner 'sudo -u podman /home/podman/homelab-quadlets/bin/deploy.sh'
 
 SERVICES=(config pihole caddy linkding n8n mcp-hub cloudflared mealie readeck uptime-kuma homepage)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-QUADLETS_DIR="$(dirname "$SCRIPT_DIR")"
+REPO_DIR="/home/podman/homelab-quadlets"
+REPO_URL="https://github.com/albandiguer/homelab-quadlets.git"
 
-# If arguments provided, use them; otherwise use all services
-if [ $# -gt 0 ]; then
-	DEPLOY_SERVICES=("$@")
+# Clone or update repository
+if [ ! -d "$REPO_DIR" ]; then
+	echo "Cloning repository..."
+	git clone "$REPO_URL" "$REPO_DIR"
 else
-	DEPLOY_SERVICES=("${SERVICES[@]}")
+	echo "Updating repository..."
+	cd "$REPO_DIR"
+	git pull
 fi
 
-cd "$QUADLETS_DIR"
+cd "$REPO_DIR"
 
-# Ensure required directories exist
-echo "Creating required directories..."
-mkdir -p /opt/homelab/quadlets
-
+echo ""
 echo "Deploying quadlet services with GNU Stow..."
 
-for service in "${DEPLOY_SERVICES[@]}"; do
+for service in "${SERVICES[@]}"; do
 	if [ ! -d "$service" ]; then
-		echo "✗ Service '$service' not found"
-		exit 1
+		echo "  ⊘ Service '$service' not found, skipping"
+		continue
 	fi
 
 	echo "  Installing $service..."
