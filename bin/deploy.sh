@@ -20,6 +20,10 @@ fi
 
 cd "$QUADLETS_DIR"
 
+# Ensure required directories exist
+echo "Creating required directories..."
+mkdir -p /opt/homelab/quadlets
+
 echo "Deploying quadlet services with GNU Stow..."
 
 for service in "${DEPLOY_SERVICES[@]}"; do
