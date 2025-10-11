@@ -38,8 +38,12 @@ http://mealie.lab, http://mealie.lab.albandiguer.dev {
     reverse_proxy localhost:9000
 }
 
-http://uptime-kuma.lab, http://uptime-kuma.lab.albandiguer.dev {
-    reverse_proxy localhost:3001
+# Uptime kuma
+http://uptime.lab, http://uptime.lab.albandiguer.dev {
+    reverse_proxy localhost:3001 {
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+    }
 }
 
 http://homepage.lab, http://homepage.lab.albandiguer.dev {
