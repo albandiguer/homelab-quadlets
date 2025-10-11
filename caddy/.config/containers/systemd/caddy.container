@@ -8,8 +8,8 @@ ContainerName=caddy
 # For rootless, using host network since we allowed port 80
 Network=host
 
-# Mount Caddyfile
-Volume=/opt/homelab/quadlets/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+# Mount Caddyfile from podman home directory
+Volume=/home/podman/opt/homelab/quadlets/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
 
 # Persistent volumes for certificates and config on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/caddy/data:/data
