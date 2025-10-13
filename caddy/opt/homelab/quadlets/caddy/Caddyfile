@@ -47,6 +47,6 @@ http://uptime.lab, http://uptime.lab.albandiguer.dev {
     }
 }
 
-http://homepage.lab, http://homepage.lab.albandiguer.dev {
+http://home.lab, http://homepage.lab, http://homepage.lab.albandiguer.dev {
     reverse_proxy localhost:3030
 }
