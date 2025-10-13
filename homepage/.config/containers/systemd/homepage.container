@@ -16,7 +16,7 @@ Volume=${QUADLET_STORAGE_PATH}/homepage:/app/config
 Volume=%t/podman/podman.sock:/var/run/docker.sock:ro
 
 # Health check
-HealthCmd=nc -z localhost 3000 || exit 1
+HealthCmd=wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/api/healthcheck || exit 1
 HealthInterval=30s
 HealthTimeout=10s
 HealthRetries=3
