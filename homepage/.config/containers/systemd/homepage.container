@@ -6,7 +6,7 @@ After=network-online.target
 Image=ghcr.io/gethomepage/homepage:latest
 ContainerName=homepage
 Environment=PUID=1000 PGID=1000
-Environment=HOMEPAGE_ALLOWED_HOSTS=home.lab,homepage.lab,homepage.lab.albandiguer.dev
+Environment=HOMEPAGE_ALLOWED_HOSTS=home.lab,homepage.lab,homepage.lab.albandiguer.dev,localhost:3030
 PublishPort=3030:3000
 
 # Persistent volume on mounted hcloud volume
