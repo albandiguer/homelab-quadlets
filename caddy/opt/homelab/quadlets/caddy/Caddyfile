@@ -40,7 +40,7 @@ http://mealie.lab, http://mealie.lab.albandiguer.dev {
 
 # Uptime kuma
 http://uptime.lab, http://uptime.lab.albandiguer.dev {
-    reverse_proxy 127.0.0.1:3001 {
+    reverse_proxy localhost:3001 {
         transport http {
             versions h2c 1.1
         }
