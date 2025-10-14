@@ -5,7 +5,25 @@ set -e
 # This script should be run on the server (as podman user)
 # Usage: ssh hetzner 'sudo -u podman /home/podman/homelab-quadlets/bin/deploy.sh'
 
-SERVICES=(config pihole caddy linkding n8n mcp-hub cloudflared mealie readeck uptime-kuma homepage)
+SERVICES=(
+	caddy
+	cloudflared
+	config
+	homepage
+	linkding
+	mcp-hub
+	mealie
+	n8n
+	pihole
+	plane
+	readeck
+	uptime-kuma
+)
+INACTIVE_SERVICES=(
+	homepage
+	plane
+	uptime-kuma
+)
 REPO_DIR="/home/podman/homelab-quadlets"
 REPO_URL="https://github.com/albandiguer/homelab-quadlets.git"
 
@@ -22,9 +40,36 @@ fi
 cd "$REPO_DIR"
 
 echo ""
+echo "Removing inactive services..."
+
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+
+for service in "${INACTIVE_SERVICES[@]}"; do
+	if [ ! -d "$service" ]; then
+		continue
+	fi
+
+	echo "  Stopping and disabling $service..."
+	# Stop service if running
+	systemctl --user stop "${service}.service" 2>/dev/null || true
+	# Disable service if enabled
+	systemctl --user disable "${service}.service" 2>/dev/null || true
+
+	echo "  Unstowing $service..."
+	stow --delete --target="$HOME" "$service" 2>/dev/null || true
+done
+
+systemctl --user daemon-reload 2>/dev/null || true
+
+echo ""
 echo "Deploying quadlet services with GNU Stow..."
 
 for service in "${SERVICES[@]}"; do
+	# Skip if in inactive list
+	if [[ " ${INACTIVE_SERVICES[@]} " =~ " ${service} " ]]; then
+		echo "  ⊘ Service '$service' is inactive, skipping"
+		continue
+	fi
 	if [ ! -d "$service" ]; then
 		echo "  ⊘ Service '$service' not found, skipping"
 		continue
