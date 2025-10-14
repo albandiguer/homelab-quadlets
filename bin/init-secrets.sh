@@ -64,6 +64,11 @@ echo "=== Cloudflare Tunnel ==="
 create_secret "cloudflared_tunnel_token" "Cloudflare tunnel token"
 echo ""
 
+# MCP Hub secrets
+echo "=== MCP Hub API Keys ==="
+create_secret "context7_api_key" "Context7 API key"
+echo ""
+
 echo "✓ All secrets initialized successfully!"
 echo ""
 echo "You can verify secrets with:"

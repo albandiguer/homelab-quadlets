@@ -1,12 +1,24 @@
 {
 	"servers": {
-		"mdn-lookup": {
+		"context7": {
+			"disabled": false,
+			"type": "stdio",
+			"command": "bunx",
+			"args": [
+				"-y",
+				"@upstash/context7-mcp",
+				"--api-key",
+				"${CONTEXT7_API_KEY}"
+			],
+			"env": {}
+		},
+		"mcpadvisor": {
 			"disabled": false,
 			"type": "stdio",
 			"command": "npx",
 			"args": [
 				"-y",
-				"@babymanisha/mdn-mcp"
+				"@xiaohui-wang/mcpadvisor"
 			],
 			"env": {}
 		}
