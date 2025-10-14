@@ -7,10 +7,9 @@ Image=docker.io/library/node:latest
 ContainerName=mcp-hub
 PublishPort=3000:3000
 Environment=TZ=UTC
-# Install mcp-hub and run it with the config
-Exec=/bin/sh -c "npm install -g mcp-hub && mcp-hub --port 3000 --config /config/config.json"
+Exec=npx -y mcp-hub --port 3000 --config /config/config.json
 # Mount configuration from local directory
-Volume=/opt/homelab/quadlets/mcp-hub/config.json:/config/config.json:ro
+Volume=/home/podman/opt/homelab/quadlets/mcp-hub/config.json:/config/config.json:ro
 # Persist MCP server data on Hetzner Cloud volume
 Volume=${QUADLET_STORAGE_PATH}/mcp-hub/data:/data
 Network=podman
