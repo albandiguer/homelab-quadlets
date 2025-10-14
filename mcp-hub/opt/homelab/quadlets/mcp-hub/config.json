@@ -3,7 +3,7 @@
 		"context7": {
 			"disabled": false,
 			"type": "stdio",
-			"command": "bunx",
+			"command": "npx",
 			"args": [
 				"-y",
 				"@upstash/context7-mcp",
