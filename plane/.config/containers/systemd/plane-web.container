@@ -1,0 +1,31 @@
+[Unit]
+Description=Plane Web Frontend
+After=network-online.target plane-api.service
+Requires=plane-pod.pod plane-api.service
+After=plane-pod.pod.service
+BindsTo=plane-pod.pod.service
+
+[Container]
+Image=docker.io/makeplane/plane-frontend:stable
+ContainerName=plane-web
+Pod=plane-pod.pod
+
+# API configuration
+Environment=NEXT_PUBLIC_API_BASE_URL=http://plane.lab
+
+# Application URLs
+Environment=NEXT_PUBLIC_DEPLOY_URL=http://plane.lab
+
+# Health check
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target default.target

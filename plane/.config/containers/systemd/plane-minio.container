@@ -1,0 +1,34 @@
+[Unit]
+Description=Plane MinIO Object Storage
+After=network-online.target
+Requires=plane-pod.pod
+After=plane-pod.pod.service
+BindsTo=plane-pod.pod.service
+
+[Container]
+Image=docker.io/minio/minio:latest
+ContainerName=plane-minio
+Pod=plane-pod.pod
+
+# MinIO credentials
+Environment=MINIO_ROOT_USER=${PLANE_MINIO_ROOT_USER}
+Environment=MINIO_ROOT_PASSWORD=${PLANE_MINIO_ROOT_PASSWORD}
+
+# Persist MinIO data on configured storage volume
+Volume=${QUADLET_STORAGE_PATH}/plane/minio:/data
+
+# MinIO server command
+Exec=server /data --console-address ":9001"
+
+# Health check
+HealthCmd=/usr/bin/curl -f http://localhost:9000/minio/health/live || exit 1
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target default.target

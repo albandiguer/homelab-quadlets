@@ -47,4 +47,7 @@ http://mealie.lab, http://mealie.lab.albandiguer.dev {
 #     reverse_proxy 127.0.0.1:3030
 # }
 
+# Plane project management
+http://plane.lab, http://plane.lab.albandiguer.dev {
+    reverse_proxy localhost:8085
 }

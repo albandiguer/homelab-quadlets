@@ -18,6 +18,7 @@ if [ -z "$1" ]; then
 	echo "  readeck     - Reading list"
 	echo "  uptime-kuma - Monitoring service"
 	echo "  homepage    - Dashboard"
+	echo "  plane-pod   - Plane project management (restarts all plane services)"
 	echo ""
 	echo "Example: $0 n8n"
 	exit 1

@@ -1,0 +1,27 @@
+[Unit]
+Description=Plane Redis Cache
+After=network-online.target
+Requires=plane-pod.pod
+After=plane-pod.pod.service
+BindsTo=plane-pod.pod.service
+
+[Container]
+Image=docker.io/library/redis:7.2-alpine
+ContainerName=plane-redis
+Pod=plane-pod.pod
+
+# Persist Redis data on configured storage volume
+Volume=${QUADLET_STORAGE_PATH}/plane/redis:/data
+
+# Health check
+HealthCmd=/usr/local/bin/redis-cli ping
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target default.target

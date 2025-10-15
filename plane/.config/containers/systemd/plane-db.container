@@ -1,0 +1,32 @@
+[Unit]
+Description=Plane PostgreSQL Database
+After=network-online.target
+Requires=plane-pod.pod
+After=plane-pod.pod.service
+BindsTo=plane-pod.pod.service
+
+[Container]
+Image=docker.io/library/postgres:15-alpine
+ContainerName=plane-db
+Pod=plane-pod.pod
+
+# Database configuration
+Secret=plane_db_password:POSTGRES_PASSWORD,type=env
+Environment=POSTGRES_USER=${PLANE_DB_USER}
+Environment=POSTGRES_DB=${PLANE_DB_NAME}
+
+# Persist database on configured storage volume
+Volume=${QUADLET_STORAGE_PATH}/plane/pgdata:/var/lib/postgresql/data
+
+# Health check
+HealthCmd=/usr/local/bin/pg_isready -U plane
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target default.target

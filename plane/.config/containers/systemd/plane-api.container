@@ -1,0 +1,56 @@
+[Unit]
+Description=Plane API Backend
+After=network-online.target plane-db.service plane-redis.service plane-minio.service
+Requires=plane-pod.pod plane-db.service plane-redis.service plane-minio.service
+After=plane-pod.pod.service
+BindsTo=plane-pod.pod.service
+
+[Container]
+Image=docker.io/makeplane/plane-backend:stable
+ContainerName=plane-api
+Pod=plane-pod.pod
+
+# Database configuration
+Secret=plane_db_password:POSTGRES_PASSWORD,type=env
+Environment=DATABASE_URL=postgresql://${PLANE_DB_USER}:${POSTGRES_PASSWORD}@localhost:5432/${PLANE_DB_NAME}
+Environment=PGHOST=localhost
+Environment=PGDATABASE=${PLANE_DB_NAME}
+Environment=POSTGRES_USER=${PLANE_DB_USER}
+Environment=POSTGRES_DB=${PLANE_DB_NAME}
+
+# Redis configuration
+Environment=REDIS_URL=redis://localhost:6379/
+
+# Application configuration
+Environment=WEB_URL=${PLANE_WEB_URL}
+Environment=CORS_ALLOWED_ORIGINS=${PLANE_CORS_ALLOWED_ORIGINS}
+
+# Secret keys
+Environment=SECRET_KEY=${PLANE_SECRET_KEY}
+
+# File storage - MinIO
+Environment=USE_MINIO=1
+Environment=AWS_REGION=us-east-1
+Environment=AWS_S3_ENDPOINT_URL=http://localhost:9000
+Environment=AWS_S3_BUCKET_NAME=plane
+Environment=AWS_ACCESS_KEY_ID=${PLANE_MINIO_ROOT_USER}
+Environment=AWS_SECRET_ACCESS_KEY=${PLANE_MINIO_ROOT_PASSWORD}
+
+# Email configuration (optional)
+Environment=EMAIL_HOST=${PLANE_EMAIL_HOST}
+Environment=EMAIL_PORT=${PLANE_EMAIL_PORT}
+Environment=EMAIL_HOST_USER=${PLANE_EMAIL_HOST_USER}
+Environment=EMAIL_HOST_PASSWORD=${PLANE_EMAIL_HOST_PASSWORD}
+Environment=EMAIL_USE_TLS=${PLANE_EMAIL_USE_TLS}
+Environment=EMAIL_FROM=${PLANE_EMAIL_FROM}
+
+# Persist uploaded files
+Volume=${QUADLET_STORAGE_PATH}/plane/uploads:/code/plane/uploads
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target default.target

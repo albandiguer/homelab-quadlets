@@ -1,0 +1,12 @@
+[Unit]
+Description=Plane Project Management Pod
+After=network-online.target
+
+[Pod]
+PodName=plane
+# Expose only the web frontend
+PublishPort=8085:3000
+Network=podman
+
+[Install]
+WantedBy=multi-user.target default.target
