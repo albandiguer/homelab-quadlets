@@ -8,6 +8,7 @@ ContainerName=mealie
 PublishPort=9000:9000
 Secret=mealie_default_email,type=env,target=DEFAULT_EMAIL
 Secret=mealie_default_password,type=env,target=DEFAULT_PASSWORD
+Secret=openai_api_key,type=env,target=OPENAI_API_KEY
 Environment=DEFAULT_GROUP=Home
 Environment=DEFAULT_HOUSEHOLD=Home
 Environment=ALLOW_SIGNUP=true

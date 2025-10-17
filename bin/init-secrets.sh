@@ -69,6 +69,12 @@ echo "=== MCP Hub API Keys ==="
 create_secret "context7_api_key" "Context7 API key"
 echo ""
 
+
+# OpenAI - transveral usage (mealie and others)
+echo "=== Misc Credentials ==="
+create_secret "openai_api_key" "openai api key"
+echo ""
+
 echo "✓ All secrets initialized successfully!"
 echo ""
 echo "You can verify secrets with:"
