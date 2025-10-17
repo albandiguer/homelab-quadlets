@@ -10,9 +10,13 @@ Image=docker.io/minio/minio:latest
 ContainerName=plane-minio
 Pod=plane-pod.pod
 
+# Secret keys
+
 # MinIO credentials
 Environment=MINIO_ROOT_USER=${PLANE_MINIO_ROOT_USER}
-Environment=MINIO_ROOT_PASSWORD=${PLANE_MINIO_ROOT_PASSWORD}
+# Environment=MINIO_ROOT_PASSWORD=${PLANE_MINIO_ROOT_PASSWORD}
+# using secret instead
+Secret=plane_minio_root_password:MINIO_ROOT_PASSWORD,type=env
 
 # Persist MinIO data on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/plane/minio:/data

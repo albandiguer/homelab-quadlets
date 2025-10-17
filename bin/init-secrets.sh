@@ -69,6 +69,12 @@ echo "=== MCP Hub API Keys ==="
 create_secret "context7_api_key" "Context7 API key"
 echo ""
 
+# Plane
+echo "=== Plane.so Credentials ==="
+create_secret "plane_db_password" "plane.so - DB pw"
+create_secret "plane_secret_key" "plane.so - Application secret key (generate with: openssl rand -hex 32)"
+create_secret "plane_minio_root_password" "plane minio root pw - look at docs"
+echo ""
 
 # OpenAI - transveral usage (mealie and others)
 echo "=== Misc Credentials ==="
