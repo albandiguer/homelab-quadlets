@@ -18,13 +18,20 @@ if [ -z "$1" ]; then
 	echo "  readeck     - Reading list"
 	echo "  uptime-kuma - Monitoring service"
 	echo "  homepage    - Dashboard"
+	echo "  plane       - Plane project (alias for plane-pod)"
 	echo "  plane-pod   - Plane project management pod (restarts all plane services)"
 	echo ""
 	echo "Example: $0 n8n"
 	exit 1
 fi
 
-SERVICE_NAME="$1"
+INPUT_NAME="$1"
+SERVICE_NAME="$INPUT_NAME"
+
+if [ "$SERVICE_NAME" = "plane" ]; then
+	echo "Mapping 'plane' to 'plane-pod' pod unit"
+	SERVICE_NAME="plane-pod"
+fi
 
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
@@ -36,7 +43,7 @@ if [[ -z "$SERVICE_UNIT_OUTPUT" ]]; then
 	if [[ -n "$POD_UNIT_OUTPUT" ]]; then
 		UNIT_SUFFIX=".pod"
 	else
-		echo "✗ Unknown service: ${SERVICE_NAME}"
+		echo "✗ Unknown service: ${INPUT_NAME}"
 		exit 1
 	fi
 fi
