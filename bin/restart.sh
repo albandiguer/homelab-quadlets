@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Restart a quadlet service
+# Restart a quadlet service or pod
 # Usage: ./restart.sh <service-name>
 
 if [ -z "$1" ]; then
@@ -18,7 +18,7 @@ if [ -z "$1" ]; then
 	echo "  readeck     - Reading list"
 	echo "  uptime-kuma - Monitoring service"
 	echo "  homepage    - Dashboard"
-	echo "  plane-pod   - Plane project management (restarts all plane services)"
+	echo "  plane-pod   - Plane project management pod (restarts all plane services)"
 	echo ""
 	echo "Example: $0 n8n"
 	exit 1
@@ -28,26 +28,41 @@ SERVICE_NAME="$1"
 
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
-echo "Restarting $SERVICE_NAME service..."
-systemctl --user restart "${SERVICE_NAME}.service"
+SERVICE_UNIT_OUTPUT=$(systemctl --user list-unit-files --no-legend --no-pager "${SERVICE_NAME}.service" 2>/dev/null || true)
+UNIT_SUFFIX=".service"
 
-if [ $? -eq 0 ]; then
-	echo "✓ Service restarted successfully"
+if [[ -z "$SERVICE_UNIT_OUTPUT" ]]; then
+	POD_UNIT_OUTPUT=$(systemctl --user list-unit-files --no-legend --no-pager "${SERVICE_NAME}.pod" 2>/dev/null || true)
+	if [[ -n "$POD_UNIT_OUTPUT" ]]; then
+		UNIT_SUFFIX=".pod"
+	else
+		echo "✗ Unknown service: ${SERVICE_NAME}"
+		exit 1
+	fi
+fi
+
+UNIT_NAME="${SERVICE_NAME}${UNIT_SUFFIX}"
+
+echo "Restarting $UNIT_NAME..."
+if systemctl --user restart "$UNIT_NAME"; then
+	echo "✓ ${UNIT_NAME} restarted successfully"
 
 	sleep 2
 
 	echo ""
-	echo "Service status:"
-	systemctl --user is-active "${SERVICE_NAME}.service" 2>/dev/null &&
-		echo "✓ ${SERVICE_NAME} is running" ||
-		echo "✗ ${SERVICE_NAME} failed to start"
+	echo "Unit status:"
+	if systemctl --user is-active "$UNIT_NAME" 2>/dev/null; then
+		echo "✓ ${UNIT_NAME} is running"
+	else
+		echo "✗ ${UNIT_NAME} failed to start"
+	fi
 
 	echo ""
 	echo "Recent logs (last 10 lines):"
-	journalctl --user -u "${SERVICE_NAME}.service" -n 10 --no-pager 2>/dev/null
+	journalctl --user -u "$UNIT_NAME" -n 10 --no-pager 2>/dev/null || true
 else
-	echo "✗ Failed to restart service"
+	echo "✗ Failed to restart $UNIT_NAME"
 	echo "Check logs with:"
-	echo "  journalctl --user -u ${SERVICE_NAME}.service -f"
+	echo "  journalctl --user -u ${UNIT_NAME} -f"
 	exit 1
 fi
