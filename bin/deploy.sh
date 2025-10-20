@@ -21,7 +21,6 @@ SERVICES=(
 )
 INACTIVE_SERVICES=(
 	homepage
-	plane
 	uptime-kuma
 )
 REPO_DIR="/home/podman/homelab-quadlets"
