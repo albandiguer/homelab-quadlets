@@ -4,7 +4,7 @@ set -e
 # Restart Plane pod Quadlet service
 # Usage: ./restart.sh
 
-UNIT_NAME="plane.pod"
+UNIT_NAME="plane-pod.service"
 
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
