@@ -4,14 +4,9 @@ set -e
 # Restart Plane pod Quadlet service
 # Usage: ./restart.sh
 
-UNIT_NAME="plane-pod.pod"
+UNIT_NAME="plane.pod"
 
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
-
-# Check if unit exists, fallback to .pod
-# if ! systemctl --user list-unit-files "$UNIT_NAME" >/dev/null 2>&1; then
-# 	UNIT_NAME="plane-pod.pod"
-# fi
 
 if systemctl --user is-active --quiet "$UNIT_NAME"; then
 	echo "Restarting ${UNIT_NAME}..."
