@@ -1,14 +1,14 @@
 [Unit]
 Description=Plane MinIO Object Storage
 After=network-online.target
-Requires=plane-pod.pod
-After=plane-pod.pod.service
-BindsTo=plane-pod.pod.service
+Requires=plane.pod
+After=plane.pod.service
+BindsTo=plane.pod.service
 
 [Container]
 Image=docker.io/minio/minio:latest
 ContainerName=plane-minio
-Pod=plane-pod.pod
+Pod=plane.pod
 
 # Secret keys
 

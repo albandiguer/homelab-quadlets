@@ -1,14 +1,14 @@
 [Unit]
 Description=Plane API Backend
 After=network-online.target plane-db.service plane-redis.service plane-minio.service
-Requires=plane-pod.pod plane-db.service plane-redis.service plane-minio.service
-After=plane-pod.pod.service
-BindsTo=plane-pod.pod.service
+Requires=plane.pod plane-db.service plane-redis.service plane-minio.service
+After=plane.pod.service
+BindsTo=plane.pod.service
 
 [Container]
 Image=docker.io/makeplane/plane-backend:stable
 ContainerName=plane-api
-Pod=plane-pod.pod
+Pod=plane.pod
 
 # Database configuration
 Secret=plane_db_password:POSTGRES_PASSWORD,type=env
