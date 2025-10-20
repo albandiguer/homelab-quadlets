@@ -1,21 +1,41 @@
 #!/bin/bash
 set -e
 
-# Restart Plane pod Quadlet service
-# Usage: ./restart.sh
+# Restart Quadlet service or pod
+# Usage: ./restart.sh <service-name>
+# Example: ./restart.sh plane-pod
 
-UNIT_NAME="plane-pod.service"
+if [ -z "$1" ]; then
+	echo "Error: Service name required"
+	echo "Usage: $0 <service-name>"
+	echo "Example: $0 plane-pod"
+	exit 1
+fi
+
+SERVICE_NAME="$1"
+# Add .service suffix if not present
+if [[ ! "$SERVICE_NAME" =~ \.service$ ]]; then
+	UNIT_NAME="${SERVICE_NAME}.service"
+else
+	UNIT_NAME="$SERVICE_NAME"
+fi
 
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+
+# Check if service exists
+if ! systemctl --user list-unit-files "$UNIT_NAME" >/dev/null 2>&1; then
+	echo "Error: Service '$UNIT_NAME' not found"
+	exit 1
+fi
 
 if systemctl --user is-active --quiet "$UNIT_NAME"; then
 	echo "Restarting ${UNIT_NAME}..."
 	systemctl --user restart "$UNIT_NAME"
 	echo "✓ ${UNIT_NAME} restarted"
 else
-	echo "Starting ${UNIT_NAME} for the first time..."
-	systemctl --user enable --now "$UNIT_NAME"
-	echo "✓ ${UNIT_NAME} started and enabled"
+	echo "Starting ${UNIT_NAME}..."
+	systemctl --user start "$UNIT_NAME"
+	echo "✓ ${UNIT_NAME} started"
 fi
 
 echo ""
