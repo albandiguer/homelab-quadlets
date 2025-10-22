@@ -2,8 +2,8 @@
 Description=Plane Web Frontend
 After=network-online.target plane-api.service
 Requires=plane.pod plane-api.service
-After=plane.pod.service
-BindsTo=plane.pod.service
+After=plane-pod.service
+BindsTo=plane-pod.service
 
 [Container]
 Image=docker.io/makeplane/plane-frontend:stable

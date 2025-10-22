@@ -2,8 +2,8 @@
 Description=Plane Background Worker
 After=network-online.target plane-db.service plane-redis.service plane-minio.service plane-api.service
 Requires=plane.pod plane-db.service plane-redis.service plane-minio.service
-After=plane.pod.service
-BindsTo=plane.pod.service
+After=plane-pod.service
+BindsTo=plane-pod.service
 
 [Container]
 Image=docker.io/makeplane/plane-backend:stable

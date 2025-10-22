@@ -2,8 +2,8 @@
 Description=Plane Redis Cache
 After=network-online.target
 Requires=plane.pod
-After=plane.pod.service
-BindsTo=plane.pod.service
+After=plane-pod.service
+BindsTo=plane-pod.service
 
 [Container]
 Image=docker.io/library/redis:7.2-alpine

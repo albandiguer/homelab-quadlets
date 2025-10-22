@@ -2,8 +2,8 @@
 Description=Plane PostgreSQL Database
 After=network-online.target
 Requires=plane.pod
-After=plane.pod.service
-BindsTo=plane.pod.service
+After=plane-pod.service
+BindsTo=plane-pod.service
 
 [Container]
 Image=docker.io/library/postgres:15-alpine

@@ -2,8 +2,8 @@
 Description=Plane API Backend
 After=network-online.target plane-db.service plane-redis.service plane-minio.service
 Requires=plane.pod plane-db.service plane-redis.service plane-minio.service
-After=plane.pod.service
-BindsTo=plane.pod.service
+After=plane-pod.service
+BindsTo=plane-pod.service
 
 [Container]
 Image=docker.io/makeplane/plane-backend:stable

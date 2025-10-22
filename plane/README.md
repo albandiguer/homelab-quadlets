@@ -18,41 +18,18 @@ All services communicate via localhost within the pod network.
 
 ## Setup Instructions
 
-### 1. Configure Environment Variables
+### 1. Initialize Secrets
 
-SSH into your server and edit the plane configuration:
-
-```bash
-ssh hetzner
-sudo -u podman bash
-
-# Edit plane configuration
-nano ~/.config/environment.d/plane.conf
-```
-
-Update the following values in `plane.conf`:
+Run the secrets initialization script from your local machine:
 
 ```bash
-# Database password (use a strong password)
-PLANE_DB_PASSWORD=your_secure_db_password_here
-
-# Application secret key (generate with: openssl rand -hex 32)
-PLANE_SECRET_KEY=$(openssl rand -hex 32)
-
-# MinIO password (use a strong password)
-PLANE_MINIO_ROOT_PASSWORD=your_secure_minio_password_here
-
-# Optional: Configure email if needed
-PLANE_EMAIL_HOST=smtp.example.com
-PLANE_EMAIL_HOST_USER=plane@example.com
-PLANE_EMAIL_HOST_PASSWORD=your_email_password
+./bin/init-secrets.sh
 ```
 
-After editing, log out and log back in for changes to take effect:
-```bash
-exit
-sudo -u podman bash
-```
+This will prompt you for the following Plane secrets:
+- `plane_db_password` - PostgreSQL database password
+- `plane_secret_key` - Application secret (generate with: `openssl rand -hex 32`)
+- `plane_minio_root_password` - MinIO root password
 
 ### 2. Deploy Services
 
@@ -73,7 +50,10 @@ export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 # Start the pod and all services
 systemctl --user start plane-pod.service
 
-# Check status
+# Check status of all Plane services
+systemctl --user list-units "plane-*" --all
+
+# Or check individual services
 systemctl --user status plane-pod.service
 systemctl --user status plane-db.service
 systemctl --user status plane-redis.service
