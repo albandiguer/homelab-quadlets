@@ -11,7 +11,7 @@ ContainerName=plane-api
 Pod=plane.pod
 
 # Database configuration
-Secret=plane_db_password:POSTGRES_PASSWORD,type=env
+Secret=plane_db_password,target=POSTGRES_PASSWORD,type=env
 Environment=DATABASE_URL=postgresql://${PLANE_DB_USER}:${POSTGRES_PASSWORD}@localhost:5432/${PLANE_DB_NAME}
 Environment=PGHOST=localhost
 Environment=PGDATABASE=${PLANE_DB_NAME}
@@ -28,7 +28,7 @@ Environment=CORS_ALLOWED_ORIGINS=${PLANE_CORS_ALLOWED_ORIGINS}
 # Secret keys
 # Environment=SECRET_KEY=${PLANE_SECRET_KEY}
 # NOTE: using secret instead
-Secret=plane_secret_key:PLANE_SECRET_KEY,type=env
+Secret=plane_secret_key,target=PLANE_SECRET_KEY,type=env
 
 # File storage - MinIO
 Environment=USE_MINIO=1
@@ -38,7 +38,7 @@ Environment=AWS_S3_BUCKET_NAME=plane
 Environment=AWS_ACCESS_KEY_ID=${PLANE_MINIO_ROOT_USER}
 # Environment=AWS_SECRET_ACCESS_KEY=${PLANE_MINIO_ROOT_PASSWORD}
 # NOTE: using secret instead
-Secret=plane_minio_root_password:AWS_SECRET_ACCESS_KEY,type=env
+Secret=plane_minio_root_password,target=AWS_SECRET_ACCESS_KEY,type=env
 
 # Email configuration (optional)
 Environment=EMAIL_HOST=${PLANE_EMAIL_HOST}

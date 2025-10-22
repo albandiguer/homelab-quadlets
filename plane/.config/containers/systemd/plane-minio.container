@@ -16,7 +16,7 @@ Pod=plane.pod
 Environment=MINIO_ROOT_USER=${PLANE_MINIO_ROOT_USER}
 # Environment=MINIO_ROOT_PASSWORD=${PLANE_MINIO_ROOT_PASSWORD}
 # NOTE: using secret instead
-Secret=plane_minio_root_password:MINIO_ROOT_PASSWORD,type=env
+Secret=plane_minio_root_password,target=MINIO_ROOT_PASSWORD,type=env
 
 # Persist MinIO data on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/plane/minio:/data
