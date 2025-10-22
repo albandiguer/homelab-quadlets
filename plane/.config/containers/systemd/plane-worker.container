@@ -11,7 +11,7 @@ ContainerName=plane-worker
 Pod=plane.pod
 
 # Database configuration
-Secret=plane_db_password:POSTGRES_PASSWORD,type=env
+Secret=plane_db_password,target=POSTGRES_PASSWORD,type=env
 Environment=DATABASE_URL=postgresql://${PLANE_DB_USER}:${POSTGRES_PASSWORD}@localhost:5432/${PLANE_DB_NAME}
 Environment=PGHOST=localhost
 Environment=PGDATABASE=${PLANE_DB_NAME}
