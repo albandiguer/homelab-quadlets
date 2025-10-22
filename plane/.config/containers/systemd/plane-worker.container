@@ -49,7 +49,7 @@ Environment=EMAIL_USE_TLS=${PLANE_EMAIL_USE_TLS}
 Environment=EMAIL_FROM=${PLANE_EMAIL_FROM}
 
 # Run as worker
-Exec=/code/bin/worker
+Exec=./bin/docker-entrypoint-worker.sh
 
 # Persist uploaded files
 Volume=${QUADLET_STORAGE_PATH}/plane/uploads:/code/plane/uploads
