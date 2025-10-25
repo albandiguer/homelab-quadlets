@@ -11,7 +11,7 @@ ContainerName=plane-web
 Pod=plane.pod
 
 # API configuration
-Environment=NEXT_PUBLIC_API_BASE_URL=http://plane.lab
+Environment=NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 
 # Application URLs
 Environment=NEXT_PUBLIC_DEPLOY_URL=http://plane.lab
