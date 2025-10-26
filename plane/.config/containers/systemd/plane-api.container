@@ -8,7 +8,6 @@ BindsTo=plane-pod.service
 [Container]
 Image=docker.io/makeplane/plane-backend:stable
 ContainerName=plane-api
-,target=SECRET_KEY,type=env
 Pod=plane.pod
 
 # Database configuration
