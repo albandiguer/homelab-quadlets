@@ -28,7 +28,7 @@ Environment=CORS_ALLOWED_ORIGINS=${PLANE_CORS_ALLOWED_ORIGINS}
 # Secret keys
 # Environment=SECRET_KEY=${PLANE_SECRET_KEY}
 # NOTE: using secret instead
-Secret=plane_secret_key,target=PLANE_SECRET_KEY,type=env
+Secret=plane_secret_key,target=SECRET_KEY,type=env
 
 # File storage - MinIO
 Environment=USE_MINIO=1
