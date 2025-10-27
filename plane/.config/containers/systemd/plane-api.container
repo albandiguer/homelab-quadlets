@@ -9,7 +9,6 @@ BindsTo=plane-pod.service
 Image=docker.io/makeplane/plane-backend:stable
 ContainerName=plane-api
 Pod=plane.pod
-Exec=env
 
 # Database configuration
 Secret=plane_database_url,target=DATABASE_URL,type=env
