@@ -28,6 +28,7 @@ Run the secrets initialization script from your local machine:
 
 This will prompt you for the following Plane secrets:
 - `plane_db_password` - PostgreSQL database password
+- `plane_database_url` - Full database connection URL (format: `postgresql://plane:PASSWORD@localhost:5432/plane`)
 - `plane_secret_key` - Application secret (generate with: `openssl rand -hex 32`)
 - `plane_minio_root_password` - MinIO root password
 
