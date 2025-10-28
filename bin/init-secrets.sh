@@ -40,6 +40,7 @@ create_secret() {
 echo "=== n8n Credentials ==="
 create_secret "n8n_basic_auth_user" "n8n basic auth username"
 create_secret "n8n_basic_auth_password" "n8n basic auth password"
+create_secret "n8n_api_key" "n8n API key"
 echo ""
 
 # Linkding secrets

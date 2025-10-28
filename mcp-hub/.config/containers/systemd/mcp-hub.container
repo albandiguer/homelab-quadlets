@@ -8,6 +8,7 @@ ContainerName=mcp-hub
 PublishPort=3000:3000
 Environment=TZ=UTC
 Secret=context7_api_key,type=env,target=CONTEXT7_API_KEY
+Secret=n8n_api_key,type=env,target=N8N_API_KEY
 Exec=npx -y mcp-hub --port 3000 --config /config/config.json
 # Mount configuration from local directory
 Volume=/home/podman/opt/homelab/quadlets/mcp-hub/config.json:/config/config.json:ro
