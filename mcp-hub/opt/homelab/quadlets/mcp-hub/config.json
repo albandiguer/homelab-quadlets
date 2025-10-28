@@ -32,7 +32,7 @@
 				"MCP_MODE": "stdio",
 				"LOG_LEVEL": "error",
 				"DISABLE_CONSOLE_OUTPUT": "true",
-				"N8N_API_URL": "http://n8n:5678",
+				"N8N_API_URL": "http://10.88.0.2:5678",
 				"N8N_API_KEY": "${N8N_API_KEY}"
 			}
 		}
