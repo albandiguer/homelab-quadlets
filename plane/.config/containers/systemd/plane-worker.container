@@ -20,6 +20,7 @@ Environment=POSTGRES_DB=${PLANE_DB_NAME}
 
 # Redis configuration
 Environment=REDIS_URL=redis://localhost:6379/
+Environment=CELERY_BROKER_URL=redis://localhost:6379/0
 
 # Application configuration
 Environment=WEB_URL=${PLANE_WEB_URL}
