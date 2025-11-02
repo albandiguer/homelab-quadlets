@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh hetzner:*)",
+      "WebFetch(domain:developers.plane.so)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
