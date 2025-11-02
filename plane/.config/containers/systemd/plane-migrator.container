@@ -1,0 +1,53 @@
+[Unit]
+Description=Plane Database Migrator
+After=network-online.target plane-db.service plane-redis.service
+Requires=plane.pod plane-db.service plane-redis.service
+After=plane-pod.service
+BindsTo=plane-pod.service
+
+[Container]
+Image=docker.io/makeplane/plane-backend:stable
+ContainerName=plane-migrator
+Pod=plane.pod
+
+# Database configuration
+Secret=plane_database_url,target=DATABASE_URL,type=env
+Environment=PGHOST=localhost
+Environment=PGDATABASE=${PLANE_DB_NAME}
+Environment=POSTGRES_USER=${PLANE_DB_USER}
+Environment=POSTGRES_DB=${PLANE_DB_NAME}
+
+# Redis configuration
+Environment=REDIS_URL=redis://localhost:6379/
+
+# Application configuration
+Environment=WEB_URL=${PLANE_WEB_URL}
+Environment=CORS_ALLOWED_ORIGINS=${PLANE_CORS_ALLOWED_ORIGINS}
+Environment=DEBUG=0
+
+# Secret keys
+Secret=plane_secret_key,target=SECRET_KEY,type=env
+
+# File storage - MinIO
+Environment=USE_MINIO=1
+Environment=AWS_REGION=us-east-1
+Environment=AWS_S3_ENDPOINT_URL=http://localhost:9000
+Environment=AWS_S3_BUCKET_NAME=plane
+Environment=AWS_ACCESS_KEY_ID=${PLANE_MINIO_ROOT_USER}
+Environment=MINIO_ENDPOINT_SSL=0
+Secret=plane_minio_root_password,target=AWS_SECRET_ACCESS_KEY,type=env
+
+# Run database migrations
+Exec=./bin/docker-entrypoint-migrator.sh
+
+# Persist logs
+Volume=${QUADLET_STORAGE_PATH}/plane/logs/migrator:/code/plane/logs
+
+[Service]
+# Run once on startup, don't restart on success
+Restart=on-failure
+RestartSec=30
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target default.target

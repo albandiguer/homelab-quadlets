@@ -1,7 +1,7 @@
 [Unit]
 Description=Plane API Backend
-After=network-online.target plane-db.service plane-redis.service plane-minio.service
-Requires=plane.pod plane-db.service plane-redis.service plane-minio.service
+After=network-online.target plane-db.service plane-redis.service plane-minio.service plane-mq.service
+Requires=plane.pod plane-db.service plane-redis.service plane-minio.service plane-mq.service
 After=plane-pod.service
 BindsTo=plane-pod.service
 
@@ -21,15 +21,25 @@ Environment=POSTGRES_DB=${PLANE_DB_NAME}
 Environment=REDIS_URL=redis://localhost:6379/
 Environment=CELERY_BROKER_URL=redis://localhost:6379/0
 
+# RabbitMQ/AMQP configuration
+Secret=plane_mq_amqp_url,target=AMQP_URL,type=env
+Environment=RABBITMQ_HOST=localhost
+Environment=RABBITMQ_PORT=5672
+Environment=RABBITMQ_VHOST=plane
+
 # Application configuration
 Environment=WEB_URL=${PLANE_WEB_URL}
 Environment=CORS_ALLOWED_ORIGINS=${PLANE_CORS_ALLOWED_ORIGINS}
 Environment=GUNICORN_WORKERS=4
+Environment=DEBUG=0
+Environment=API_KEY_RATE_LIMIT=60/minute
+Environment=MINIO_ENDPOINT_SSL=0
 
 # Secret keys
 # Environment=SECRET_KEY=${PLANE_SECRET_KEY}
 # NOTE: using secret instead
 Secret=plane_secret_key,target=SECRET_KEY,type=env
+Secret=plane_live_server_secret_key,target=LIVE_SERVER_SECRET_KEY,type=env
 
 # File storage - MinIO
 Environment=USE_MINIO=1

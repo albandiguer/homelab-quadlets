@@ -1,0 +1,36 @@
+[Unit]
+Description=Plane Live Service (Real-time Collaboration)
+After=network-online.target plane-api.service plane-web.service plane-redis.service
+Requires=plane.pod plane-api.service plane-web.service plane-redis.service
+After=plane-pod.service
+BindsTo=plane-pod.service
+
+[Container]
+Image=docker.io/makeplane/plane-live:stable
+ContainerName=plane-live
+Pod=plane.pod
+
+# API configuration
+Environment=API_BASE_URL=http://localhost:8000
+
+# Redis configuration
+Environment=REDIS_HOST=localhost
+Environment=REDIS_PORT=6379
+Environment=REDIS_URL=redis://localhost:6379/
+
+# Live server secret key (must match API/worker)
+Secret=plane_live_server_secret_key,target=LIVE_SERVER_SECRET_KEY,type=env
+
+# Health check
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target default.target

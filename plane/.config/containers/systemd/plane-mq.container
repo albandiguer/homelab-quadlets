@@ -1,0 +1,32 @@
+[Unit]
+Description=Plane RabbitMQ Message Queue
+After=network-online.target
+Requires=plane.pod
+After=plane-pod.service
+BindsTo=plane-pod.service
+
+[Container]
+Image=docker.io/rabbitmq:3.13.6-management-alpine
+ContainerName=plane-mq
+Pod=plane.pod
+
+# RabbitMQ credentials
+Environment=RABBITMQ_DEFAULT_USER=${PLANE_MQ_USER}
+Secret=plane_mq_password,target=RABBITMQ_DEFAULT_PASS,type=env
+Environment=RABBITMQ_DEFAULT_VHOST=plane
+
+# Persist RabbitMQ data on configured storage volume
+Volume=${QUADLET_STORAGE_PATH}/plane/rabbitmq:/var/lib/rabbitmq
+
+# Health check
+HealthCmd=/bin/sh -c "rabbitmq-diagnostics -q ping"
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target default.target

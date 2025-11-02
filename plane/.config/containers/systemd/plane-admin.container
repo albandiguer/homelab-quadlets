@@ -1,0 +1,31 @@
+[Unit]
+Description=Plane Admin Frontend
+After=network-online.target plane-api.service plane-web.service
+Requires=plane.pod plane-api.service plane-web.service
+After=plane-pod.service
+BindsTo=plane-pod.service
+
+[Container]
+Image=docker.io/makeplane/plane-admin:stable
+ContainerName=plane-admin
+Pod=plane.pod
+
+# API configuration
+Environment=NEXT_PUBLIC_API_BASE_URL=http://plane.lab
+
+# Application URLs
+Environment=NEXT_PUBLIC_DEPLOY_URL=http://plane.lab
+
+# Health check
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target default.target

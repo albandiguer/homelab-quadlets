@@ -6,13 +6,24 @@ Plane is an open-source alternative to Jira, Linear, and Monday for project mana
 
 This deployment uses a Podman pod with the following services:
 
+### Core Infrastructure
 - **plane-pod**: Main pod exposing port 8085 → 3000
 - **plane-db**: PostgreSQL 15 database
-- **plane-redis**: Redis cache and queue
+- **plane-redis**: Redis cache and queue (Valkey)
+- **plane-mq**: RabbitMQ message queue (AMQP broker)
 - **plane-minio**: MinIO S3-compatible object storage
-- **plane-api**: Backend API server
-- **plane-worker**: Background job processor
-- **plane-web**: Next.js frontend application
+
+### Backend Services
+- **plane-api**: Backend API server (Django/Gunicorn)
+- **plane-worker**: Celery background job processor
+- **plane-beat-worker**: Celery beat scheduler for periodic tasks
+- **plane-migrator**: Database migration service (runs on startup)
+
+### Frontend Services
+- **plane-web**: Main Next.js web frontend application
+- **plane-space**: Public project spaces frontend
+- **plane-admin**: Admin interface frontend
+- **plane-live**: Real-time collaboration service
 
 All services communicate via localhost within the pod network.
 
@@ -31,6 +42,9 @@ This will prompt you for the following Plane secrets:
 - `plane_database_url` - Full database connection URL (format: `postgresql://plane:PASSWORD@localhost:5432/plane`)
 - `plane_secret_key` - Application secret (generate with: `openssl rand -hex 32`)
 - `plane_minio_root_password` - MinIO root password
+- `plane_mq_password` - RabbitMQ password for the plane user
+- `plane_mq_amqp_url` - Full AMQP connection URL (format: `amqp://plane:PASSWORD@localhost:5672/plane`)
+- `plane_live_server_secret_key` - Live collaboration server secret (generate with: `openssl rand -hex 32`)
 
 ### 2. Deploy Services
 
@@ -58,10 +72,16 @@ systemctl --user list-units "plane-*" --all
 systemctl --user status plane-pod.service
 systemctl --user status plane-db.service
 systemctl --user status plane-redis.service
+systemctl --user status plane-mq.service
 systemctl --user status plane-minio.service
+systemctl --user status plane-migrator.service
 systemctl --user status plane-api.service
 systemctl --user status plane-worker.service
+systemctl --user status plane-beat-worker.service
 systemctl --user status plane-web.service
+systemctl --user status plane-space.service
+systemctl --user status plane-admin.service
+systemctl --user status plane-live.service
 ```
 
 ### 4. Initialize MinIO Bucket
@@ -146,7 +166,21 @@ journalctl --user -u plane-db.service -f
 All data is stored in `${QUADLET_STORAGE_PATH}/plane/`:
 - `pgdata/` - PostgreSQL database
 - `redis/` - Redis data
-- `minio/` - Object storage
+- `rabbitmq/` - RabbitMQ message queue data
+- `minio/` - Object storage (S3-compatible)
 - `uploads/` - Uploaded files
+- `logs/` - Service logs (api, worker, beat-worker, migrator)
 
 This defaults to `/mnt/homelab-data/plane/` on your Hetzner server.
+
+## Service Dependencies
+
+The startup order is managed automatically by systemd:
+
+1. **Network & Pod**: `plane-pod.service`
+2. **Core Dependencies**: `plane-db`, `plane-redis`, `plane-mq`, `plane-minio`
+3. **Database Setup**: `plane-migrator` (runs migrations)
+4. **Backend**: `plane-api`, `plane-worker`, `plane-beat-worker`
+5. **Frontend**: `plane-web`, `plane-space`, `plane-admin`, `plane-live`
+
+The migrator service runs once on startup (Restart=on-failure) to apply database migrations.
