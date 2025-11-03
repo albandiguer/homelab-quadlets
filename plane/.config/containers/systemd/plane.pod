@@ -4,8 +4,8 @@ After=network-online.target
 
 [Pod]
 PodName=plane
-# Expose only the web frontend
-PublishPort=8085:3000
+# Expose the proxy (which routes to web, api, space, admin, live)
+PublishPort=8085:80
 
 [Install]
 WantedBy=multi-user.target default.target
