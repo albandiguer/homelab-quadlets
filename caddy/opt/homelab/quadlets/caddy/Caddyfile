@@ -49,7 +49,7 @@ http://mealie.lab, http://mealie.lab.albandiguer.dev {
 
 # Plane project management
 http://plane.lab, http://plane.lab.albandiguer.dev {
-    reverse_proxy localhost:8085
+    reverse_proxy 127.0.0.1:8085
     request_body {
         max_size 10MB
     }
