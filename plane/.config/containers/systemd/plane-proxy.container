@@ -13,6 +13,9 @@ Pod=plane.pod
 # Proxy configuration
 Environment=FILE_SIZE_LIMIT=5242880
 Environment=BUCKET_NAME=plane
+Environment=LISTEN_HTTP_PORT=80
+Environment=LISTEN_HTTPS_PORT=443
+Environment=SITE_ADDRESS=:80
 
 # Persist nginx config and SSL data
 Volume=${QUADLET_STORAGE_PATH}/plane/proxy-config:/config
