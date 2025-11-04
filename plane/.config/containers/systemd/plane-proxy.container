@@ -1,5 +1,5 @@
 [Unit]
-Description=Plane Nginx Reverse Proxy
+Description=Plane Reverse Proxy
 After=network-online.target plane-web.service plane-api.service plane-space.service plane-admin.service plane-live.service
 Requires=plane.pod plane-web.service plane-api.service
 After=plane-pod.service

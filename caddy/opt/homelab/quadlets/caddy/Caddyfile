@@ -53,4 +53,7 @@ http://plane.lab, http://plane.lab.albandiguer.dev {
     request_body {
         max_size 10MB
     }
+		http {
+			tls_insecure_skip_verify
+		}
 }
