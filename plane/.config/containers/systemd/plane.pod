@@ -5,13 +5,13 @@ After=network-online.target
 [Pod]
 PodName=plane
 # Expose the proxy (which routes to web, api, space, admin, live)
-PublishPort=8085:3000 # plane-web
+PublishPort=8085:3000
 # Expose individual services on different ports
-PublishPort=3001:3001  # plane-space
-PublishPort=3002:3002  # plane-admin
-PublishPort=3003:3003  # plane-live
-PublishPort=8000:8000  # plane-api
-PublishPort=9000:9000  # plane-minio
+PublishPort=3001:3001
+PublishPort=3002:3002 
+PublishPort=3003:3003
+PublishPort=8000:8000 
+PublishPort=9000:9000
 
 [Install]
 WantedBy=multi-user.target default.target
