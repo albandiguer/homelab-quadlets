@@ -16,8 +16,11 @@ Environment=NEXT_PUBLIC_API_BASE_URL=http://plane.lab
 # Application URLs
 Environment=NEXT_PUBLIC_DEPLOY_URL=http://plane.lab
 
+# Bind to all interfaces
+Exec=node apps/web/server.js --hostname 0.0.0.0  --port 3002
+
 # Health check
-HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3002 || exit 1
 HealthInterval=30s
 HealthTimeout=10s
 HealthRetries=3

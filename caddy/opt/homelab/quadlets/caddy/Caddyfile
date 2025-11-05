@@ -50,4 +50,28 @@ http://mealie.lab, http://mealie.lab.albandiguer.dev {
 # Plane project management
 http://plane.lab, http://plane.lab.albandiguer.dev {
     reverse_proxy localhost:8085
+    # Route different paths to different services
+    handle_path /spaces/* {
+        reverse_proxy localhost:3001
+    }
+
+    handle_path /god-mode/* {
+        reverse_proxy localhost:3002
+    }
+
+    handle_path /live/* {
+        reverse_proxy localhost:3003
+    }
+
+    handle_path /api/* {
+        reverse_proxy localhost:8000
+    }
+
+    handle_path /auth/* {
+        reverse_proxy localhost:8000
+    }
+
+    handle_path /plane/* {
+        reverse_proxy localhost:9000
+    }
 }

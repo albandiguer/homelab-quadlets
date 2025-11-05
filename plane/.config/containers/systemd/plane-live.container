@@ -21,8 +21,11 @@ Environment=REDIS_URL=redis://localhost:6379/
 # Live server secret key (must match API/worker)
 Secret=plane_live_server_secret_key,target=LIVE_SERVER_SECRET_KEY,type=env
 
+# Bind to all interfaces
+Exec=node apps/web/server.js --hostname 0.0.0.0  --port 3003
+
 # Health check
-HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3003 || exit 1
 HealthInterval=30s
 HealthTimeout=10s
 HealthRetries=3
