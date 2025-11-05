@@ -10,8 +10,8 @@ PublishPort=8085:3000
 PublishPort=3001:3001
 PublishPort=3002:3002 
 PublishPort=3003:3003
-PublishPort=8000:8000 
-PublishPort=9000:9000
+PublishPort=8001:8000 
+PublishPort=9001:9000
 
 [Install]
 WantedBy=multi-user.target default.target

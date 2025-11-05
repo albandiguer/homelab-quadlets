@@ -64,14 +64,14 @@ http://plane.lab, http://plane.lab.albandiguer.dev {
     }
 
     handle_path /api/* {
-        reverse_proxy localhost:8000
+        reverse_proxy localhost:8001
     }
 
     handle_path /auth/* {
-        reverse_proxy localhost:8000
+        reverse_proxy localhost:8001
     }
 
     handle_path /plane/* {
-        reverse_proxy localhost:9000
+        reverse_proxy localhost:9001
     }
 }
