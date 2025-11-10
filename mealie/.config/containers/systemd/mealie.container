@@ -18,7 +18,7 @@ Environment=PGID=1000
 Environment=TZ=UTC
 Environment=MAX_WORKERS=1
 Environment=WEB_CONCURRENCY=1
-Environment=BASE_URL=http://mealie.lab
+Environment=BASE_URL=https://mealie.albandiguer.dev
 Volume=${QUADLET_STORAGE_PATH}/mealie/data:/app/data
 Network=podman
 
