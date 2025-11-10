@@ -1,0 +1,11 @@
+[Unit]
+Description=Plane Application Network
+Wants=network-online.target
+
+[Network]
+NetworkName=plane
+Driver=bridge
+
+# Optional: Configure subnet if needed
+Subnet=10.89.0.0/24
+Gateway=10.89.0.1
