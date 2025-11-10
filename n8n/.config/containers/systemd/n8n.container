@@ -4,6 +4,7 @@ After=network-online.target
 
 [Container]
 Image=docker.n8n.io/n8nio/n8n:latest
+AutoUpdate=registry
 ContainerName=n8n
 PublishPort=5678:5678
 Secret=n8n_basic_auth_user,type=env,target=N8N_BASIC_AUTH_USER

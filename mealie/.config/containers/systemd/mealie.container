@@ -4,6 +4,7 @@ After=network-online.target
 
 [Container]
 Image=ghcr.io/mealie-recipes/mealie:latest
+AutoUpdate=registry
 ContainerName=mealie
 PublishPort=9000:9000
 Secret=mealie_default_email,type=env,target=DEFAULT_EMAIL

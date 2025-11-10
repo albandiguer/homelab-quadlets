@@ -4,6 +4,7 @@ After=network-online.target
 
 [Container]
 Image=docker.io/sissbruecker/linkding:latest
+AutoUpdate=registry
 ContainerName=linkding
 PublishPort=9090:9090
 Secret=linkding_superuser_name,type=env,target=LD_SUPERUSER_NAME
