@@ -13,7 +13,8 @@ http://:80/health {
 }
 
 # Active services
-http://pihole.lab, http://pihole.lab.albandiguer.dev {
+http://pihole.lab, 
+http://pihole.lab.albandiguer.dev {
     redir / /admin
     reverse_proxy localhost:8053
 }
@@ -22,19 +23,25 @@ http://linkding.lab, http://linkding.lab.albandiguer.dev {
     reverse_proxy localhost:9090
 }
 
-http://n8n.lab, http://n8n.lab.albandiguer.dev, http://n8n.albandiguer.dev {
+http://n8n.lab, 
+http://n8n.lab.albandiguer.dev, 
+http://n8n.albandiguer.dev {
     reverse_proxy localhost:5678
 }
 
-http://mcp-hub.lab, http://mcp-hub.lab.albandiguer.dev {
+http://mcp-hub.lab, 
+http://mcp-hub.lab.albandiguer.dev {
     reverse_proxy localhost:3000
 }
 
-http://readeck.lab, http://readeck.lab.albandiguer.dev {
+http://readeck.lab, 
+http://readeck.lab.albandiguer.dev {
     reverse_proxy localhost:8000
 }
 
-http://mealie.lab, http://mealie.lab.albandiguer.dev {
+http://mealie.albandiguer.dev,
+http://mealie.lab, 
+http://mealie.lab.albandiguer.dev {
     reverse_proxy localhost:9000
 }
 
@@ -48,7 +55,8 @@ http://mealie.lab, http://mealie.lab.albandiguer.dev {
 # }
 
 # Plane project management
-http://plane.lab, http://plane.lab.albandiguer.dev {
+http://plane.lab, 
+http://plane.lab.albandiguer.dev {
     reverse_proxy localhost:8085
     # Route different paths to different services
     handle_path /spaces/* {
