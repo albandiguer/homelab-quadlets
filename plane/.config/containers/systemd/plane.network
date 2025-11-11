@@ -3,7 +3,7 @@ Description=Plane Application Network
 Wants=network-online.target
 
 [Network]
-NetworkName=plane
+NetworkName=plane.network
 Driver=bridge
 
 # Optional: Configure subnet if needed
