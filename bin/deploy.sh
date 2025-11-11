@@ -16,7 +16,6 @@ SERVICES=(
 	n8n
 	pihole
 	plane
-	plane.network
 	readeck
 	uptime-kuma
 )
