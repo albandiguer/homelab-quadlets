@@ -24,7 +24,7 @@ Secret=plane_live_server_secret_key,target=LIVE_SERVER_SECRET_KEY,type=env
 # We want port 3001 to be used instead of 3000
 Environment=PORT=3001
 # Wonder if this works
-Publish=3001:3001
+# Publish=3001:3001
 
 # Health check
 HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3001 || exit 1
