@@ -6,7 +6,7 @@ After=plane-pod.service
 BindsTo=plane-pod.service
 
 [Container]
-Image=docker.io/rabbitmq:3.13.6-management-alpine
+Image=docker.io/rabbitmq:3.13-management-alpine
 ContainerName=plane-mq
 Pod=plane.pod
 
@@ -19,7 +19,7 @@ Environment=RABBITMQ_DEFAULT_VHOST=plane
 Volume=${QUADLET_STORAGE_PATH}/plane/rabbitmq:/var/lib/rabbitmq
 
 # Health check
-HealthCmd=/bin/sh -c "rabbitmq-diagnostics -q ping"
+HealthCmd=rabbitmq-diagnostics -q ping
 HealthInterval=30s
 HealthTimeout=10s
 HealthRetries=3
