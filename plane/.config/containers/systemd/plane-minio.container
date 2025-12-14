@@ -25,7 +25,7 @@ Volume=${QUADLET_STORAGE_PATH}/plane/minio:/data
 Exec=server /data --console-address ":9001"
 
 # Health check
-HealthCmd=/usr/bin/curl -f http://localhost:9000/minio/health/live || exit 1
+HealthCmd=/usr/bin/curl -f http://plane:9000/minio/health/live || exit 1
 HealthInterval=30s
 HealthTimeout=10s
 HealthRetries=3

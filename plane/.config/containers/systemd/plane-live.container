@@ -11,12 +11,12 @@ ContainerName=plane-live
 Pod=plane.pod
 
 # API configuration
-Environment=API_BASE_URL=http://localhost:8000
+Environment=API_BASE_URL=http://plane:8000
 
 # Redis configuration
-Environment=REDIS_HOST=localhost
+Environment=REDIS_HOST=plane
 Environment=REDIS_PORT=6379
-Environment=REDIS_URL=redis://localhost:6379/
+Environment=REDIS_URL=redis://plane:6379/
 
 # Live server secret key (must match API/worker)
 Secret=plane_live_server_secret_key,target=LIVE_SERVER_SECRET_KEY,type=env
@@ -27,7 +27,7 @@ Environment=PORT=3001
 # Publish=3001:3001
 
 # Health check
-HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
+HealthCmd=/usr/bin/wget --no-verbose --tries=1 --spider http://plane:3001/health || exit 1
 HealthInterval=30s
 HealthTimeout=10s
 HealthRetries=3
