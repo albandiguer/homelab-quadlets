@@ -10,9 +10,6 @@ Image=docker.io/makeplane/plane-space:stable
 ContainerName=plane-space
 Pod=plane.pod
 
-# Force Next.js to bind to all interfaces
-Environment=HOSTNAME=0.0.0.0
-
 # Change port
 Environment=PORT=3002
 

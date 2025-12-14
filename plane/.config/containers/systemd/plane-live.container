@@ -10,9 +10,6 @@ Image=docker.io/makeplane/plane-live:stable
 ContainerName=plane-live
 Pod=plane.pod
 
-# Force Next.js to bind to all interfaces
-Environment=HOSTNAME=0.0.0.0
-
 # API configuration
 Environment=API_BASE_URL=http://localhost:8000
 

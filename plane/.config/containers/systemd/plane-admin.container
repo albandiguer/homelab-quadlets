@@ -10,9 +10,6 @@ Image=docker.io/makeplane/plane-admin:stable
 ContainerName=plane-admin
 Pod=plane.pod
 
-# Force Next.js to bind to all interfaces
-Environment=HOSTNAME=0.0.0.0
-
 Environment=PORT=3004
 
 # API configuration
