@@ -1,0 +1,54 @@
+[Unit]
+Description=Plane AIO Community
+After=network-online.target plane-db.service plane-redis.service plane-minio.service plane-mq.service
+Requires=plane.pod plane-db.service plane-redis.service plane-minio.service plane-mq.service
+After=plane-pod.service
+BindsTo=plane-pod.service
+
+[Container]
+Image=docker.io/makeplane/plane-aio-community:stable
+ContainerName=plane-aio
+Pod=plane.pod
+
+# Domain configuration - use HTTP since main Caddy handles external routing
+Environment=DOMAIN_NAME=localhost
+Environment=SITE_ADDRESS=:80
+Environment=FILE_SIZE_LIMIT=5242880
+
+# Disable HTTPS/ACME (main Caddy handles this externally)
+Environment=CERT_EMAIL=
+Environment=CERT_ACME_CA=
+Environment=CERT_ACME_DNS=
+Environment=TRUSTED_PROXIES=0.0.0.0/0
+
+# Database - using secret for full URL
+Secret=plane_database_url,target=DATABASE_URL,type=env
+
+# Redis
+Environment=REDIS_URL=redis://plane:6379/
+
+# RabbitMQ/AMQP
+Secret=plane_mq_amqp_url,target=AMQP_URL,type=env
+
+# MinIO/S3 storage
+Environment=USE_MINIO=1
+Environment=AWS_REGION=us-east-1
+Environment=AWS_S3_ENDPOINT_URL=http://plane:9000
+Environment=AWS_S3_BUCKET_NAME=plane
+Environment=AWS_ACCESS_KEY_ID=${PLANE_MINIO_ROOT_USER}
+Secret=plane_minio_root_password,target=AWS_SECRET_ACCESS_KEY,type=env
+
+# Secret keys
+Secret=plane_secret_key,target=SECRET_KEY,type=env
+
+# Volumes for data persistence
+Volume=${QUADLET_STORAGE_PATH}/plane/aio-data:/app/data
+Volume=${QUADLET_STORAGE_PATH}/plane/aio-logs:/app/logs
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target default.target
