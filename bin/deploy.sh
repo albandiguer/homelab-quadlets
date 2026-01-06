@@ -15,13 +15,13 @@ SERVICES=(
 	mealie
 	n8n
 	pihole
-	plane
 	readeck
 	uptime-kuma
 )
 INACTIVE_SERVICES=(
 	homepage
 	uptime-kuma
+	plane
 )
 REPO_DIR="/home/podman/homelab-quadlets"
 REPO_URL="https://github.com/albandiguer/homelab-quadlets.git"
