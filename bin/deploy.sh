@@ -11,7 +11,6 @@ SERVICES=(
 	config
 	homepage
 	linkding
-	mcp-hub
 	mealie
 	n8n
 	pihole
@@ -22,6 +21,7 @@ INACTIVE_SERVICES=(
 	homepage
 	uptime-kuma
 	plane-pod
+	mcp-hub
 )
 REPO_DIR="/home/podman/homelab-quadlets"
 REPO_URL="https://github.com/albandiguer/homelab-quadlets.git"
