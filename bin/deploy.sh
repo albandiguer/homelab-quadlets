@@ -21,7 +21,7 @@ SERVICES=(
 INACTIVE_SERVICES=(
 	homepage
 	uptime-kuma
-	plane
+	plane-pod
 )
 REPO_DIR="/home/podman/homelab-quadlets"
 REPO_URL="https://github.com/albandiguer/homelab-quadlets.git"

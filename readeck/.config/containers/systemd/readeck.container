@@ -6,6 +6,7 @@ After=network-online.target
 Image=codeberg.org/readeck/readeck:latest
 ContainerName=readeck
 PublishPort=8000:8000
+AutoUpdate=registry
 
 # Persistent data on Hetzner Cloud volume
 Volume=${QUADLET_STORAGE_PATH}/readeck:/readeck

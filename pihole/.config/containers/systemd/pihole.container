@@ -9,6 +9,7 @@ ContainerName=pihole
 # This works because we set net.ipv4.ip_unprivileged_port_start=53
 Network=host
 Secret=pihole_webpassword,type=env,target=FTLCONF_webserver_api_password
+AutoUpdate=registry
 
 # Timezone
 Environment=TZ=UTC
