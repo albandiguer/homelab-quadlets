@@ -42,9 +42,6 @@ Install GNU Stow:
 # Fedora/RHEL
 sudo dnf install stow
 
-# Ubuntu/Debian
-sudo apt install stow
-
 # macOS
 brew install stow
 ```
