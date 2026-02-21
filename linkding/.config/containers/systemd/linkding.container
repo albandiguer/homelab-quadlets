@@ -14,8 +14,15 @@ Environment=LD_DISABLE_URL_VALIDATION=False
 Volume=${QUADLET_STORAGE_PATH}/linkding/data:/etc/linkding/data
 Network=podman
 
+# Health check
+HealthCmd=/bin/sh -c "wget --no-verbose --tries=1 --spider http://localhost:9090/health || exit 1"
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
 [Service]
 Restart=always
+RestartSec=30
 TimeoutStartSec=900
 
 [Install]

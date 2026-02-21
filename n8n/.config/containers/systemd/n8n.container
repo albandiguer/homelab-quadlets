@@ -25,8 +25,15 @@ Environment=N8N_PROXY_HOPS=1
 Volume=${QUADLET_STORAGE_PATH}/n8n/data:/home/node/.n8n
 Network=podman
 
+# Health check
+HealthCmd=/bin/sh -c "wget --no-verbose --tries=1 --spider http://localhost:5678/healthz || exit 1"
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
 [Service]
 Restart=always
+RestartSec=30
 TimeoutStartSec=900
 
 [Install]

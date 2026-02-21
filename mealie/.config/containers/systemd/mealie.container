@@ -22,8 +22,15 @@ Environment=BASE_URL=https://mealie.albandiguer.dev
 Volume=${QUADLET_STORAGE_PATH}/mealie/data:/app/data
 Network=podman
 
+# Health check
+HealthCmd=/bin/sh -c "wget --no-verbose --tries=1 --spider http://localhost:9000/api/app/about || exit 1"
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
 [Service]
 Restart=always
+RestartSec=30
 TimeoutStartSec=900
 
 [Install]

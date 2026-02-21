@@ -52,13 +52,13 @@ From your local machine:
 
 ```bash
 # Deploy to server (will pull latest from git and install with stow)
-ssh hetzner 'sudo -u podman /home/podman/homelab-quadlets/bin/deploy.sh'
+ssh minilab 'sudo -u podman /home/podman/homelab-quadlets/bin/deploy.sh'
 ```
 
 ### 3. Start Services
 
 ```bash
-ssh hetzner
+ssh minilab
 sudo -u podman bash
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
@@ -121,7 +121,7 @@ podman exec -it plane-api python manage.py migrate
 
 ```bash
 # From your local machine
-ssh hetzner 'sudo -u podman /home/podman/homelab-quadlets/bin/restart.sh plane-pod'
+ssh minilab 'sudo -u podman /home/podman/homelab-quadlets/bin/restart.sh plane-pod'
 
 # On the server
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
@@ -131,7 +131,7 @@ systemctl --user restart plane-pod.service
 ## View Logs
 
 ```bash
-ssh hetzner
+ssh minilab
 sudo -u podman bash
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 

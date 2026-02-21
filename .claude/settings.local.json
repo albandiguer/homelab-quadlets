@@ -1,8 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ssh hetzner:*)",
-      "WebFetch(domain:developers.plane.so)"
+      "Bash(ssh minilab:*)",
+      "WebFetch(domain:developers.plane.so)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

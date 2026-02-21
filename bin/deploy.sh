@@ -3,7 +3,7 @@ set -e
 
 # Deploy quadlet services from Git repository using GNU Stow
 # This script should be run on the server (as podman user)
-# Usage: ssh hetzner 'sudo -u podman /home/podman/homelab-quadlets/bin/deploy.sh'
+# Usage: ssh minilab 'sudo -u podman /home/podman/homelab-quadlets/bin/deploy.sh'
 
 SERVICES=(
 	caddy

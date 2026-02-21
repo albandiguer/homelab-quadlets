@@ -4,6 +4,7 @@ After=network-online.target
 
 [Container]
 Image=docker.io/library/caddy:latest
+AutoUpdate=registry
 ContainerName=caddy
 # For rootless, using host network since we allowed port 80
 Network=host

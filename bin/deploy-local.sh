@@ -13,19 +13,19 @@ QUADLETS_DIR="$(dirname "$SCRIPT_DIR")"
 # Step 1: Push to server
 echo "Pushing to server..."
 cd "$QUADLETS_DIR"
-git push hetzner main
+git push minilab main
 
 # Step 2: Deploy (stow + daemon-reload)
 echo "Deploying on server..."
-ssh hetzner-podman '/home/podman/homelab-quadlets/bin/deploy.sh'
+ssh minilab-podman '/home/podman/homelab-quadlets/bin/deploy.sh'
 
 # Step 3: Restart services if specified
 if [ $# -gt 0 ]; then
   for service in "$@"; do
     echo "Restarting $service..."
-    ssh hetzner-podman "systemctl --user restart ${service}.service"
+    ssh minilab-podman "systemctl --user restart ${service}.service"
     echo "--- Last 20 log lines for $service ---"
-    ssh hetzner-podman "journalctl --user -u ${service}.service -n 20 --no-pager"
+    ssh minilab-podman "journalctl --user -u ${service}.service -n 20 --no-pager"
   done
 fi
 

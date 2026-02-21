@@ -15,7 +15,7 @@ Volume=${QUADLET_STORAGE_PATH}/readeck:/readeck
 Environment=READECK_SERVER_BASE_URL=http://readeck.lab
 
 # Health check
-HealthCmd=/bin/sh -c "wget --no-verbose --tries=1 --spider http://localhost:8000/ || exit 1"
+HealthCmd=/bin/sh -c "wget --no-verbose --tries=1 -O /dev/null http://localhost:8000/ || exit 1"
 HealthInterval=30s
 HealthTimeout=10s
 HealthRetries=3

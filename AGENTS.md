@@ -1,21 +1,26 @@
 # AGENTS Guide
 - **Context:** Rootless Podman Quadlets powering the minilab homelab.
 - **Repo Layout:** Each service is a stow package under `<service>/.config/containers/systemd`.
-- **Storage:** Persist data via `$QUADLET_STORAGE_PATH` (default `/mnt/minilab-data`).
+- **Storage:** Persist data via `$QUADLET_STORAGE_PATH` (default `/mnt/minilab-data`). Always mount volumes under `/mnt/`.
 - **Secrets:** Run `./bin/init-secrets.sh` to (re)create Podman secrets interactively.
-- **Deploy All:** `ssh hetzner 'sudo -u podman /home/podman/homelab-quadlets/bin/deploy.sh'`.
-- **Deploy One:** Pass service names to `deploy.sh`, e.g. `./bin/deploy.sh caddy`.
+- **Deploy (local):** `./bin/deploy-local.sh` pushes to server, runs stow, and daemon-reload. Pass service names to also restart them: `./bin/deploy-local.sh caddy n8n`.
+- **Deploy (server):** `ssh minilab-podman '/home/podman/homelab-quadlets/bin/deploy.sh'`.
 - **Restart/Logs:** Use `./bin/restart.sh <service>` for restart, status, and tail.
+- **SSH:** Use `ssh minilab` or `ssh minilab-podman` (configured in ~/.ssh/config). Port 22 is closed on the firewall; access is VPN-only via 10.0.0.1.
 - **Tests:** No automated suite; validate with `systemctl --user status <service>.service`.
 - **Single Check:** Inspect specific logs via `journalctl --user -u <service>.service -n 50`.
 - **Stow Checks:** Ensure `stow --restow --target="$HOME" <service>` completes cleanly before deployment.
 - **Quadlet Style:** Keep `[Unit]`, `[Container]`, `[Service]`, `[Install]` sections ordered and minimal.
-- **Images:** Pin fully-qualified container images; avoid `:latest`; document credential needs.
+- **Health Checks:** Every container must have `HealthCmd`, `HealthInterval=30s`, `HealthTimeout=10s`, `HealthRetries=3`.
+- **Restart Policy:** Every container must have `Restart=always` and `RestartSec=30` in `[Service]`.
+- **Auto-Update:** Active services should have `AutoUpdate=registry` in `[Container]`.
+- **Images:** Use fully-qualified container image references; document credential needs.
 - **Volumes:** Mount persistence under `/mnt/` using `$QUADLET_STORAGE_PATH` and service-specific subdirs.
 - **Env Files:** Place configs in `opt/homelab/quadlets/<service>/`; keep secrets out of git.
 - **Scripts:** Use Bash with `set -e`, helpful echo output, and guarded user prompts.
 - **Naming:** Match service, directory, and container names (kebab-case) for consistency.
-- **Caddy/Deploy:** Update `caddy/Caddyfile`, `bin/deploy.sh`, and `bin/restart.sh` when adding services.
+- **New Services:** Update `bin/deploy.sh` (SERVICES array), `caddy/Caddyfile`, and add `bin/restart.sh` entry.
 - **Error Handling:** Favor early exits, explicit status checks, and instructive failure messages.
 - **Networking:** Mind host networking; ensure ports respect rootless limits (>=53) and Caddy routes exist.
-- **Cursor/Copilot:** No repository-specific Cursor or Copilot rules detected (2025-10-18).
+- **Active Services:** caddy, cloudflared, config, linkding, mealie, n8n, pihole, readeck.
+- **Inactive Services:** homepage, uptime-kuma, plane-pod, mcp-hub.
