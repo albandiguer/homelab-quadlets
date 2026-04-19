@@ -1,0 +1,27 @@
+[Unit]
+Description=Open WebUI - AI Chat Interface
+After=network-online.target
+
+[Container]
+Image=ghcr.io/open-webui/open-webui:main
+AutoUpdate=registry
+ContainerName=open-webui
+PublishPort=3040:8080
+Secret=openai_api_key,type=env,target=OPENAI_API_KEY
+# Persist data on configured storage volume
+Volume=${QUADLET_STORAGE_PATH}/open-webui/data:/app/backend/data
+Network=podman
+
+# Health check
+HealthCmd=/bin/sh -c "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target

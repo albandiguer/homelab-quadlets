@@ -60,6 +60,12 @@ http://plane.lab.albandiguer.dev {
     reverse_proxy localhost:8085
 }
 
+# Open WebUI
+http://openwebui.lab,
+http://openwebui.lab.albandiguer.dev {
+    reverse_proxy localhost:3040
+}
+
 # OpenClaw (running on theclaw server at 10.0.0.10)
 http://openclaw.lab,
 http://openclaw.lab.albandiguer.dev {

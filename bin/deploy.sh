@@ -13,6 +13,7 @@ SERVICES=(
 	linkding
 	mealie
 	n8n
+	open-webui
 	pihole
 	readeck
 	uptime-kuma
