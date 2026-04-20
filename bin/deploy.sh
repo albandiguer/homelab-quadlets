@@ -15,13 +15,13 @@ SERVICES=(
 	n8n
 	open-webui
 	pihole
+	plane-pod
 	readeck
 	uptime-kuma
 )
 INACTIVE_SERVICES=(
 	homepage
 	uptime-kuma
-	plane-pod
 	mcp-hub
 )
 REPO_DIR="/home/podman/homelab-quadlets"
@@ -66,7 +66,14 @@ echo "Deploying quadlet services with GNU Stow..."
 
 for service in "${SERVICES[@]}"; do
 	# Skip if in inactive list
-	if [[ " ${INACTIVE_SERVICES[@]} " =~ " ${service} " ]]; then
+	skip=false
+	for inactive in "${INACTIVE_SERVICES[@]}"; do
+		if [ "$service" = "$inactive" ]; then
+			skip=true
+			break
+		fi
+	done
+	if [ "$skip" = true ]; then
 		echo "  ⊘ Service '$service' is inactive, skipping"
 		continue
 	fi
@@ -77,6 +84,23 @@ for service in "${SERVICES[@]}"; do
 
 	echo "  Installing $service..."
 	stow --restow --target="$HOME" "$service"
+
+	# Create volume directories for this service
+	container_file="$service/.config/containers/systemd/${service%.pod}.container"
+	if [ -f "$container_file" ]; then
+		# Get storage path from environment or use default
+		storage_path="${QUADLET_STORAGE_PATH:-/mnt/minilab-data}"
+
+		# Extract volume host paths and create directories
+		grep -E '^Volume=' "$container_file" 2>/dev/null | while IFS= read -r line; do
+			# Extract path between Volume= and the colon
+			host_path=$(echo "$line" | sed -n 's/^Volume=\([^:]*\):.*/\1/p' | sed "s|\\\${QUADLET_STORAGE_PATH}|$storage_path|g")
+			if [ -n "$host_path" ] && [ ! -d "$host_path" ]; then
+				echo "    Creating volume directory: $host_path"
+				mkdir -p "$host_path"
+			fi
+		done
+	fi
 done
 
 echo ""
