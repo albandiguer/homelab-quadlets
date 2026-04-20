@@ -6,7 +6,8 @@ After=plane-pod.service
 BindsTo=plane-pod.service
 
 [Container]
-Image=docker.io/rabbitmq:3.13-management-alpine
+Image=docker.io/rabbitmq:3.13-alpine
+AutoUpdate=registry
 ContainerName=plane-mq
 Pod=plane.pod
 

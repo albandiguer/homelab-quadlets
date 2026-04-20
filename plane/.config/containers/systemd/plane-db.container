@@ -7,6 +7,7 @@ BindsTo=plane-pod.service
 
 [Container]
 Image=docker.io/library/postgres:15-alpine
+AutoUpdate=registry
 ContainerName=plane-db
 Pod=plane.pod
 
@@ -18,8 +19,8 @@ Environment=POSTGRES_DB=${PLANE_DB_NAME}
 # Persist database on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/plane/pgdata:/var/lib/postgresql/data
 
-# Health check
-HealthCmd=/usr/local/bin/pg_isready -U plane
+# Health check (use POSTGRES_USER env var if set, fallback to plane)
+HealthCmd=/bin/sh -c 'pg_isready -U "${POSTGRES_USER:-plane}" -d "${POSTGRES_DB:-plane}"'
 HealthInterval=30s
 HealthTimeout=10s
 HealthRetries=3

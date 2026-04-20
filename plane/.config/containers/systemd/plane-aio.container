@@ -7,6 +7,7 @@ BindsTo=plane-pod.service
 
 [Container]
 Image=docker.io/makeplane/plane-aio-community:stable
+AutoUpdate=registry
 ContainerName=plane-aio
 Pod=plane.pod
 
@@ -44,6 +45,12 @@ Secret=plane_secret_key,target=SECRET_KEY,type=env
 # Volumes for data persistence
 Volume=${QUADLET_STORAGE_PATH}/plane/aio-data:/app/data
 Volume=${QUADLET_STORAGE_PATH}/plane/aio-logs:/app/logs
+
+# Health check
+HealthCmd=/usr/bin/curl -f http://plane:80/api/health-check/ || exit 1
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
 
 [Service]
 Restart=always
