@@ -18,6 +18,9 @@ Secret=plane_minio_root_password,target=MINIO_ROOT_PASSWORD,type=env
 # Persist MinIO data on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/plane/minio:/data
 
+# MinIO server command (required - image entrypoint needs 'server' subcommand)
+Exec=server /data --console-address ":9001"
+
 # Health check (MinIO image includes curl)
 HealthCmd=/usr/bin/curl -fsS http://plane:9000/minio/health/live || exit 1
 HealthInterval=30s
