@@ -15,7 +15,7 @@ SERVICES=(
 	n8n
 	open-webui
 	pihole
-	plane-pod
+	plane
 	readeck
 	uptime-kuma
 )

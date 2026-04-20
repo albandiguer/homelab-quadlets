@@ -22,5 +22,5 @@
 - **New Services:** Update `bin/deploy.sh` (SERVICES array), `caddy/Caddyfile`, and add `bin/restart.sh` entry.
 - **Error Handling:** Favor early exits, explicit status checks, and instructive failure messages.
 - **Networking:** Mind host networking; ensure ports respect rootless limits (>=53) and Caddy routes exist.
-- **Active Services:** caddy, cloudflared, config, linkding, mealie, n8n, pihole, readeck.
-- **Inactive Services:** homepage, uptime-kuma, plane-pod, mcp-hub.
+- **Active Services:** caddy, cloudflared, config, linkding, mealie, n8n, pihole, plane, readeck.
+- **Inactive Services:** homepage, uptime-kuma, mcp-hub.

@@ -30,10 +30,15 @@ run_on_minilab '/home/podman/homelab-quadlets/bin/deploy.sh'
 # Step 3: Restart services if specified
 if [ $# -gt 0 ]; then
 	for service in "$@"; do
+		# Map directory names to actual systemd service names
+		case "$service" in
+		plane) service_unit="plane-pod" ;;
+		*) service_unit="$service" ;;
+		esac
 		echo "Restarting $service..."
-		run_on_minilab "systemctl --user restart ${service}.service"
+		run_on_minilab "systemctl --user restart ${service_unit}.service"
 		echo "--- Last 20 log lines for $service ---"
-		run_on_minilab "journalctl --user -u ${service}.service -n 20 --no-pager"
+		run_on_minilab "journalctl --user -u ${service_unit}.service -n 20 --no-pager"
 	done
 fi
 
