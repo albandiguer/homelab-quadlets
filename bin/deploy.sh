@@ -92,12 +92,19 @@ for service in "${SERVICES[@]}"; do
 		storage_path="${QUADLET_STORAGE_PATH:-/mnt/minilab-data}"
 
 		# Extract volume host paths and create directories
+		# Only create directories for paths containing QUADLET_STORAGE_PATH (data volumes)
+		# Skip bind mounts that reference files or absolute paths outside storage
 		grep -E '^Volume=' "$container_file" 2>/dev/null | while IFS= read -r line; do
 			# Extract path between Volume= and the colon
-			host_path=$(echo "$line" | sed -n 's/^Volume=\([^:]*\):.*/\1/p' | sed "s|\\\${QUADLET_STORAGE_PATH}|$storage_path|g")
-			if [ -n "$host_path" ] && [ ! -d "$host_path" ]; then
-				echo "    Creating volume directory: $host_path"
-				mkdir -p "$host_path"
+			host_path=$(echo "$line" | sed -n 's/^Volume=\([^:]*\):.*/\1/p')
+			# Only process if it contains the storage path variable
+			if echo "$host_path" | grep -q '\${QUADLET_STORAGE_PATH}'; then
+				# Expand the variable
+				host_path=$(echo "$host_path" | sed "s|\\\${QUADLET_STORAGE_PATH}|$storage_path|g")
+				if [ -n "$host_path" ] && [ ! -d "$host_path" ]; then
+					echo "    Creating volume directory: $host_path"
+					mkdir -p "$host_path"
+				fi
 			fi
 		done
 	fi
