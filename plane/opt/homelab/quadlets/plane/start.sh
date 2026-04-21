@@ -44,13 +44,15 @@ update_env_value(){
     fi
 
     if ! grep -q "^$key=.*" plane.env; then
-        echo "${key}=${value}" >> plane.env
+        printf '%s=%s\n' "$key" "$value" >> plane.env
         return 0
     fi
 
-    if [ -n "$key" ] && [ -n "$value" ]; then
-        # Use different delimiter for sed to avoid issues with special chars like #, /, &
-        sed -i "s|^$key=.*|$key=$value|" plane.env
+    if [ -n "$key" ]; then
+        # Escape special regex chars in key and value for safe sed usage
+        local escaped_key=$(printf '%s' "$key" | sed 's/[]\/$*.^[]/\\&/g')
+        # Use awk instead of sed for values with special chars
+        awk -v key="$key" -v val="$value" 'BEGIN{FS=OFS="="} $1==key {$2=val} 1' plane.env > plane.env.tmp && mv plane.env.tmp plane.env
         return 0
     fi
 }
