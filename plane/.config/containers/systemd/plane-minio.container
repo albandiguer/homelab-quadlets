@@ -15,6 +15,13 @@ Pod=plane.pod
 Environment=MINIO_ROOT_USER=${PLANE_MINIO_ROOT_USER}
 Secret=plane_minio_root_password,target=MINIO_ROOT_PASSWORD,type=env
 
+# CORS configuration for browser uploads from plane.lab
+Environment=MINIO_API_CORS_ALLOW_ORIGIN="http://plane.lab,https://plane.lab"
+Environment=MINIO_API_CORS_ALLOW_METHODS="GET,POST,PUT,DELETE,OPTIONS"
+Environment=MINIO_API_CORS_ALLOW_HEADERS="*"
+Environment=MINIO_API_CORS_EXPOSE_HEADERS="ETag"
+Environment=MINIO_API_CORS_MAX_AGE="3000"
+
 # Persist MinIO data on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/plane/minio:/data
 

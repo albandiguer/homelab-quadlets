@@ -57,7 +57,9 @@ http://mealie.lab.albandiguer.dev {
 # Plane MinIO S3 storage
 http://plane-minio.lab,
 http://plane-minio.lab.albandiguer.dev {
-    reverse_proxy localhost:9001
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:9001
     # Note: CORS headers are handled by MinIO itself for S3 operations
     # Do not add CORS headers here to avoid duplicates
 }
