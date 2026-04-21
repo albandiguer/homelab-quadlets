@@ -108,8 +108,8 @@ update_env_file(){
     update_env_value "AWS_SECRET_ACCESS_KEY" "$AWS_SECRET_ACCESS_KEY"
     update_env_value "AWS_S3_BUCKET_NAME" "$AWS_S3_BUCKET_NAME"
     
-    # AWS_S3_ENDPOINT_URL is set in container environment
-    # AddHost directive ensures plane-minio.lab resolves to MinIO within the pod
+    # Set S3 endpoint URL - AddHost in pod ensures plane-minio.lab resolves to MinIO
+    update_env_value "AWS_S3_ENDPOINT_URL" "${AWS_S3_ENDPOINT_URL:-http://plane-minio.lab}"
     
     update_env_value "BUCKET_NAME" "$AWS_S3_BUCKET_NAME"
     update_env_value "USE_MINIO" "0"
