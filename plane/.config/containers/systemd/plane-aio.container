@@ -36,9 +36,9 @@ Environment=USE_MINIO=1
 Environment=AWS_REGION=us-east-1
 # Internal endpoint for API/boto3 to connect to MinIO
 Environment=AWS_S3_ENDPOINT_URL=http://plane:9000
-# Public URL for browser presigned URLs (must be accessible from browser)
-Environment=AWS_S3_PUBLIC_URL=http://plane-minio.lab
 Environment=AWS_S3_BUCKET_NAME=plane
+# Proxy uploads through Plane API to avoid CORS issues
+Environment=USE_STORAGE_PROXY=1
 Environment=AWS_ACCESS_KEY_ID=${PLANE_MINIO_ROOT_USER}
 Secret=plane_minio_root_password,target=AWS_SECRET_ACCESS_KEY,type=env
 
