@@ -54,10 +54,11 @@ create_secret() {
 }
 
 # Helper: Create a Plane database URL with URL-encoded password
+# Usage: create_plane_db_url [password]
+# If password is not provided, it will prompt for it
 create_plane_db_url() {
 	local secret_name="plane_database_url"
-	local prompt_password="Plane - Database password (will be URL-encoded automatically)"
-	local db_password
+	local db_password="$1"
 
 	# Check if secret exists
 	if podman secret exists "$secret_name" 2>/dev/null; then
@@ -69,13 +70,15 @@ create_plane_db_url() {
 		podman secret rm "$secret_name"
 	fi
 
-	# Prompt for just the password
-	read -sp "$prompt_password: " db_password
-	echo
-
+	# Prompt for password if not provided
 	if [ -z "$db_password" ]; then
-		echo "  ✗ Empty password, skipping $secret_name"
-		return 1
+		read -sp "Plane - Database password (will be URL-encoded automatically): " db_password
+		echo
+
+		if [ -z "$db_password" ]; then
+			echo "  ✗ Empty password, skipping $secret_name"
+			return 1
+		fi
 	fi
 
 	# URL encode the password
@@ -90,10 +93,11 @@ create_plane_db_url() {
 }
 
 # Helper: Create a Plane AMQP URL with URL-encoded password
+# Usage: create_plane_amqp_url [password]
+# If password is not provided, it will prompt for it
 create_plane_amqp_url() {
 	local secret_name="plane_mq_amqp_url"
-	local prompt_password="Plane - RabbitMQ password (will be URL-encoded automatically)"
-	local mq_password
+	local mq_password="$1"
 
 	# Check if secret exists
 	if podman secret exists "$secret_name" 2>/dev/null; then
@@ -105,13 +109,15 @@ create_plane_amqp_url() {
 		podman secret rm "$secret_name"
 	fi
 
-	# Prompt for just the password
-	read -sp "$prompt_password: " mq_password
-	echo
-
+	# Prompt for password if not provided
 	if [ -z "$mq_password" ]; then
-		echo "  ✗ Empty password, skipping $secret_name"
-		return 1
+		read -sp "Plane - RabbitMQ password (will be URL-encoded automatically): " mq_password
+		echo
+
+		if [ -z "$mq_password" ]; then
+			echo "  ✗ Empty password, skipping $secret_name"
+			return 1
+		fi
 	fi
 
 	# URL encode the password
@@ -159,14 +165,67 @@ echo "=== MCP Hub API Keys ==="
 create_secret "context7_api_key" "Context7 API key"
 echo ""
 
-# Plane
+# Plane - special handling to reuse passwords for URLs
 echo "=== Plane.so Credentials ==="
-create_secret "plane_db_password" "Plane - PostgreSQL password (also used for DATABASE_URL)"
-create_plane_db_url
+
+# Database password - remember it for the URL
+PLANE_DB_PW=""
+if ! podman secret exists "plane_db_password" 2>/dev/null; then
+	read -sp "Plane - PostgreSQL password (used for both plane_db_password and DATABASE_URL): " PLANE_DB_PW
+	echo
+	if [ -n "$PLANE_DB_PW" ]; then
+		echo -n "$PLANE_DB_PW" | podman secret create "plane_db_password" -
+		echo "  ✓ Created secret: plane_db_password"
+	fi
+else
+	read -p "Secret 'plane_db_password' already exists. Update it? (y/N): " update
+	if [[ "$update" =~ ^[Yy]$ ]]; then
+		read -sp "Plane - PostgreSQL password: " PLANE_DB_PW
+		echo
+		if [ -n "$PLANE_DB_PW" ]; then
+			podman secret rm "plane_db_password"
+			echo -n "$PLANE_DB_PW" | podman secret create "plane_db_password" -
+			echo "  ✓ Updated secret: plane_db_password"
+		fi
+	else
+		echo "  ⊘ Skipping plane_db_password"
+	fi
+fi
+
+# Create database URL using the same password
+create_plane_db_url "$PLANE_DB_PW"
+
+# Other secrets
 create_secret "plane_secret_key" "Plane - Application secret key (generate with: openssl rand -hex 32)"
 create_secret "plane_minio_root_password" "Plane - MinIO root password"
-create_secret "plane_mq_password" "Plane - RabbitMQ password (also used for AMQP_URL)"
-create_plane_amqp_url
+
+# RabbitMQ password - remember it for the URL
+PLANE_MQ_PW=""
+if ! podman secret exists "plane_mq_password" 2>/dev/null; then
+	read -sp "Plane - RabbitMQ password (used for both plane_mq_password and AMQP_URL): " PLANE_MQ_PW
+	echo
+	if [ -n "$PLANE_MQ_PW" ]; then
+		echo -n "$PLANE_MQ_PW" | podman secret create "plane_mq_password" -
+		echo "  ✓ Created secret: plane_mq_password"
+	fi
+else
+	read -p "Secret 'plane_mq_password' already exists. Update it? (y/N): " update
+	if [[ "$update" =~ ^[Yy]$ ]]; then
+		read -sp "Plane - RabbitMQ password: " PLANE_MQ_PW
+		echo
+		if [ -n "$PLANE_MQ_PW" ]; then
+			podman secret rm "plane_mq_password"
+			echo -n "$PLANE_MQ_PW" | podman secret create "plane_mq_password" -
+			echo "  ✓ Updated secret: plane_mq_password"
+		fi
+	else
+		echo "  ⊘ Skipping plane_mq_password"
+	fi
+fi
+
+# Create AMQP URL using the same password
+create_plane_amqp_url "$PLANE_MQ_PW"
+
 create_secret "plane_live_server_secret_key" "Plane - Live server secret key (generate with: openssl rand -hex 32)"
 echo ""
 
