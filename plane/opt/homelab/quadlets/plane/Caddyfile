@@ -1,21 +1,49 @@
 (plane_proxy) {
-	request_body {
-		max_size {$FILE_SIZE_LIMIT}
-	}
+ 	request_body {
+ 		max_size {$FILE_SIZE_LIMIT}
+ 	}
 
     handle /spaces/* {
-        reverse_proxy localhost:3002
+        reverse_proxy localhost:3002 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Host {host}
+            header_up X-Forwarded-Port {server_port}
+            header_up X-Forwarded-Proto {scheme}
+        }
     }
-	
+ 	
     handle /live/* {
-        reverse_proxy localhost:3005
+        reverse_proxy localhost:3005 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Host {host}
+            header_up X-Forwarded-Port {server_port}
+            header_up X-Forwarded-Proto {scheme}
+        }
     }
 	handle /api/* {
-        reverse_proxy 127.0.0.1:3004
+        reverse_proxy 127.0.0.1:3004 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Host {host}
+            header_up X-Forwarded-Port {server_port}
+            header_up X-Forwarded-Proto {scheme}
+        }
     }
 
 	handle /auth/* {
-        reverse_proxy 127.0.0.1:3004
+        reverse_proxy 127.0.0.1:3004 {
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Host {host}
+            header_up X-Forwarded-Port {server_port}
+            header_up X-Forwarded-Proto {scheme}
+        }
     }
 
 	handle_path /god-mode* {

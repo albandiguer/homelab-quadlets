@@ -12,7 +12,7 @@ ContainerName=plane-aio
 Pod=plane.pod
 
 # Domain configuration - use HTTP since main Caddy handles external routing
-Environment=DOMAIN_NAME=localhost
+Environment=DOMAIN_NAME=plane.lab
 Environment=SITE_ADDRESS=:80
 Environment=FILE_SIZE_LIMIT=5242880
 
