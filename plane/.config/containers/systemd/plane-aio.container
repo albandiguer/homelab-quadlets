@@ -36,6 +36,8 @@ Environment=USE_MINIO=1
 Environment=AWS_REGION=us-east-1
 # Use external URL so browser can upload directly to MinIO
 Environment=AWS_S3_ENDPOINT_URL=http://plane-minio.lab
+# Set the public endpoint for browser access (needs explicit port)
+Environment=MINIO_PUBLIC_ENDPOINT=http://plane-minio.lab:80
 Environment=AWS_S3_BUCKET_NAME=plane
 Environment=AWS_ACCESS_KEY_ID=${PLANE_MINIO_ROOT_USER}
 Secret=plane_minio_root_password,target=AWS_SECRET_ACCESS_KEY,type=env

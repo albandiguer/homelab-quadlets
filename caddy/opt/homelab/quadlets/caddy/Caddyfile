@@ -57,7 +57,7 @@ http://mealie.lab.albandiguer.dev {
 # Plane MinIO S3 storage
 http://plane-minio.lab,
 http://plane-minio.lab.albandiguer.dev {
-    reverse_proxy localhost:9000
+    reverse_proxy localhost:9001
     # Add CORS headers for browser uploads
     header {
         Access-Control-Allow-Origin "http://plane.lab"
