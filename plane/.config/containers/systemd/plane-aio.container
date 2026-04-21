@@ -37,11 +37,10 @@ Environment=REDIS_URL=redis://plane:6379/
 Secret=plane_mq_amqp_url,target=AMQP_URL,type=env
 
 # MinIO/S3 storage
+# Use external URL for both API and presigned URLs
+# AddHost directive maps plane-minio.lab to localhost within the pod
 Environment=AWS_REGION=us-east-1
-# API uses internal endpoint, but presigned URLs use external (via custom start.sh)
-Environment=AWS_S3_ENDPOINT_URL=http://plane:9000
-# External URL for browser presigned uploads (custom start.sh uses this)
-Environment=AWS_S3_EXTERNAL_URL=http://plane-minio.lab
+Environment=AWS_S3_ENDPOINT_URL=http://plane-minio.lab
 Environment=AWS_S3_BUCKET_NAME=plane
 Environment=AWS_ACCESS_KEY_ID=${PLANE_MINIO_ROOT_USER}
 Secret=plane_minio_root_password,target=AWS_SECRET_ACCESS_KEY,type=env
