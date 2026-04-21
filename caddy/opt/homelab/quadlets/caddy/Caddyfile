@@ -54,6 +54,19 @@ http://mealie.lab.albandiguer.dev {
 #     reverse_proxy 127.0.0.1:3030
 # }
 
+# Plane MinIO S3 storage
+http://plane-minio.lab,
+http://plane-minio.lab.albandiguer.dev {
+    reverse_proxy localhost:9000
+    # Add CORS headers for browser uploads
+    header {
+        Access-Control-Allow-Origin "http://plane.lab"
+        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Access-Control-Allow-Headers "*"
+        Access-Control-Allow-Credentials "true"
+    }
+}
+
 # Plane project management
 http://plane.lab,
 http://plane.lab.albandiguer.dev {

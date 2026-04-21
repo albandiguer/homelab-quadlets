@@ -6,6 +6,8 @@ After=network-online.target
 PodName=plane
 # Expose the proxy (which routes to web, api, space, admin, live)
 PublishPort=8085:80
+# Expose MinIO for direct S3 uploads from browser
+PublishPort=9000:9000
 
 [Install]
 WantedBy=multi-user.target default.target
