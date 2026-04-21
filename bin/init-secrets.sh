@@ -101,7 +101,7 @@ create_plane_db_url() {
 	echo "  ✓ Created secret: $secret_name"
 }
 
-# Helper: Create a Plane AMQP URL with URL-encoded password
+# Helper: Create a Plane AMQP URL (password NOT encoded - RabbitMQ handles special chars)
 # Usage: create_plane_amqp_url [password]
 # If password is provided, updates without prompting (assumes password was just updated)
 # If password is not provided, it will prompt for it
@@ -129,7 +129,7 @@ create_plane_amqp_url() {
 
 	# Prompt for password if not provided
 	if [ -z "$mq_password" ]; then
-		read -sp "Plane - RabbitMQ password (will be URL-encoded automatically): " mq_password
+		read -sp "Plane - RabbitMQ password (for AMQP URL): " mq_password
 		echo
 
 		if [ -z "$mq_password" ]; then
@@ -138,13 +138,8 @@ create_plane_amqp_url() {
 		fi
 	fi
 
-	# URL encode the password
-	local encoded_password
-	encoded_password=$(url_encode "$mq_password")
-	echo "  ℹ URL-encoded password"
-
-	# Build the full AMQP URL
-	local amqp_url="amqp://plane:${encoded_password}@plane:5672/plane"
+	# Build the full AMQP URL (password NOT URL-encoded for RabbitMQ)
+	local amqp_url="amqp://plane:${mq_password}@plane:5672/plane"
 	echo -n "$amqp_url" | podman secret create "$secret_name" -
 	echo "  ✓ Created secret: $secret_name"
 }
