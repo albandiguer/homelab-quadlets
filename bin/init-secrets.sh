@@ -55,17 +55,26 @@ create_secret() {
 
 # Helper: Create a Plane database URL with URL-encoded password
 # Usage: create_plane_db_url [password]
+# If password is provided, updates without prompting (assumes password was just updated)
 # If password is not provided, it will prompt for it
 create_plane_db_url() {
 	local secret_name="plane_database_url"
 	local db_password="$1"
+	local force_update=false
+
+	# If password is provided, we're updating because password was changed
+	if [ -n "$db_password" ]; then
+		force_update=true
+	fi
 
 	# Check if secret exists
 	if podman secret exists "$secret_name" 2>/dev/null; then
-		read -p "Secret '$secret_name' already exists. Update it? (y/N): " update
-		if [[ ! "$update" =~ ^[Yy]$ ]]; then
-			echo "  ⊘ Skipping $secret_name"
-			return 0
+		if [ "$force_update" = false ]; then
+			read -p "Secret '$secret_name' already exists. Update it? (y/N): " update
+			if [[ ! "$update" =~ ^[Yy]$ ]]; then
+				echo "  ⊘ Skipping $secret_name"
+				return 0
+			fi
 		fi
 		podman secret rm "$secret_name"
 	fi
@@ -94,17 +103,26 @@ create_plane_db_url() {
 
 # Helper: Create a Plane AMQP URL with URL-encoded password
 # Usage: create_plane_amqp_url [password]
+# If password is provided, updates without prompting (assumes password was just updated)
 # If password is not provided, it will prompt for it
 create_plane_amqp_url() {
 	local secret_name="plane_mq_amqp_url"
 	local mq_password="$1"
+	local force_update=false
+
+	# If password is provided, we're updating because password was changed
+	if [ -n "$mq_password" ]; then
+		force_update=true
+	fi
 
 	# Check if secret exists
 	if podman secret exists "$secret_name" 2>/dev/null; then
-		read -p "Secret '$secret_name' already exists. Update it? (y/N): " update
-		if [[ ! "$update" =~ ^[Yy]$ ]]; then
-			echo "  ⊘ Skipping $secret_name"
-			return 0
+		if [ "$force_update" = false ]; then
+			read -p "Secret '$secret_name' already exists. Update it? (y/N): " update
+			if [[ ! "$update" =~ ^[Yy]$ ]]; then
+				echo "  ⊘ Skipping $secret_name"
+				return 0
+			fi
 		fi
 		podman secret rm "$secret_name"
 	fi
