@@ -108,12 +108,12 @@ update_env_file(){
     update_env_value "AWS_SECRET_ACCESS_KEY" "$AWS_SECRET_ACCESS_KEY"
     update_env_value "AWS_S3_BUCKET_NAME" "$AWS_S3_BUCKET_NAME"
     
-    # KEY FIX: API uses internal endpoint, presigned URLs use external
-    # Internal endpoint for API to connect to MinIO within the pod
-    update_env_value "AWS_S3_ENDPOINT_URL" "${AWS_S3_ENDPOINT_URL:-http://plane:9000}"
-    # External endpoint for browser presigned URLs (if supported by Plane)
+    # KEY FIX: Use external MinIO URL for both API connection and presigned URLs
+    # Hosts entry in container maps plane-minio.lab to localhost (MinIO in pod)
     if [ -n "$AWS_S3_EXTERNAL_URL" ]; then
-        update_env_value "AWS_S3_EXTERNAL_ENDPOINT_URL" "$AWS_S3_EXTERNAL_URL"
+        update_env_value "AWS_S3_ENDPOINT_URL" "$AWS_S3_EXTERNAL_URL"
+    else
+        update_env_value "AWS_S3_ENDPOINT_URL" "${AWS_S3_ENDPOINT_URL:-http://plane:9000}"
     fi
     
     update_env_value "BUCKET_NAME" "$AWS_S3_BUCKET_NAME"

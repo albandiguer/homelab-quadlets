@@ -11,6 +11,11 @@ AutoUpdate=registry
 ContainerName=plane-aio
 Pod=plane.pod
 
+# Map external MinIO domain to localhost within the pod
+# This allows the API to connect to MinIO using the external URL
+# while generating presigned URLs that work in the browser
+HostName=plane-minio.lab:127.0.0.1
+
 # Domain configuration - use HTTP since main Caddy handles external routing
 Environment=DOMAIN_NAME=plane.lab
 Environment=SITE_ADDRESS=:80
