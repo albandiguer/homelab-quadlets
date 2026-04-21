@@ -8,6 +8,10 @@ PodName=plane
 PublishPort=8085:80
 # Expose MinIO for direct S3 uploads from browser (using 9001 since 9000 is taken by mealie)
 PublishPort=9001:9000
+# Map external MinIO domain to localhost within the pod
+# This allows the API to connect to MinIO using the external URL
+# while generating presigned URLs that work in the browser
+AddHost=plane-minio.lab:127.0.0.1
 
 [Install]
 WantedBy=multi-user.target default.target
