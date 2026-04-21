@@ -46,8 +46,12 @@ Secret=plane_secret_key,target=SECRET_KEY,type=env
 Volume=${QUADLET_STORAGE_PATH}/plane/aio-data:/app/data
 Volume=${QUADLET_STORAGE_PATH}/plane/aio-logs:/app/logs
 
-# Health check
-HealthCmd=/usr/bin/curl -f http://plane:80/api/health-check/ || exit 1
+# Override internal Caddyfile to use 127.0.0.1 instead of localhost
+# This fixes IPv6 connection issues where localhost resolves to ::1
+Volume=/home/podman/opt/homelab/quadlets/plane/Caddyfile:/app/proxy/Caddyfile:ro
+
+# Health check - use /api/instances/ which returns 200 when healthy
+HealthCmd=/usr/bin/curl -f http://127.0.0.1:3004/api/instances/ || exit 1
 HealthInterval=30s
 HealthTimeout=10s
 HealthRetries=3
