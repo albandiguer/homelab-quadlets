@@ -32,13 +32,12 @@ Environment=REDIS_URL=redis://plane:6379/
 Secret=plane_mq_amqp_url,target=AMQP_URL,type=env
 
 # MinIO/S3 storage
-Environment=USE_MINIO=1
 Environment=AWS_REGION=us-east-1
-# Internal endpoint for API/boto3 to connect to MinIO
+# API uses internal endpoint, but presigned URLs use external (via custom start.sh)
 Environment=AWS_S3_ENDPOINT_URL=http://plane:9000
+# External URL for browser presigned uploads (custom start.sh uses this)
+Environment=AWS_S3_EXTERNAL_URL=http://plane-minio.lab
 Environment=AWS_S3_BUCKET_NAME=plane
-# Proxy uploads through Plane API to avoid CORS issues
-Environment=USE_STORAGE_PROXY=1
 Environment=AWS_ACCESS_KEY_ID=${PLANE_MINIO_ROOT_USER}
 Secret=plane_minio_root_password,target=AWS_SECRET_ACCESS_KEY,type=env
 
@@ -52,6 +51,10 @@ Volume=${QUADLET_STORAGE_PATH}/plane/aio-logs:/app/logs
 # Override internal Caddyfile to use 127.0.0.1 instead of localhost
 # This fixes IPv6 connection issues where localhost resolves to ::1
 Volume=/home/podman/opt/homelab/quadlets/plane/Caddyfile:/app/proxy/Caddyfile:ro
+
+# Override start.sh to use external MinIO URL for presigned URLs
+# This fixes CORS issues by making browser and API use the same external endpoint
+Volume=/home/podman/opt/homelab/quadlets/plane/start.sh:/app/start.sh:ro
 
 # Health check - use /api/instances/ which returns 200 when healthy
 HealthCmd=/usr/bin/curl -f http://127.0.0.1:3004/api/instances/ || exit 1
