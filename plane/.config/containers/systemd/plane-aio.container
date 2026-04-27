@@ -25,6 +25,7 @@ Environment=TRUSTED_PROXIES=0.0.0.0/0
 # Worker configuration - reduced for single-user instance
 Environment=WORKER_REPLICAS=1
 Environment=GUNICORN_WORKERS=2
+Environment=CELERYD_OPTS="--autoscale=2"
 
 # Database - using secret for full URL
 Secret=plane_database_url,target=DATABASE_URL,type=env
@@ -55,7 +56,7 @@ Volume=${QUADLET_STORAGE_PATH}/plane/aio-logs:/app/logs
 # This fixes IPv6 connection issues where localhost resolves to ::1
 Volume=/home/podman/opt/homelab/quadlets/plane/Caddyfile:/app/proxy/Caddyfile:ro
 
-# Override start.sh to use external MinIO URL for presigned URLs
+e Override start.sh to use external MinIO URL for presigned URLs
 # This fixes CORS issues by making browser and API use the same external endpoint
 Volume=/home/podman/opt/homelab/quadlets/plane/start.sh:/app/start.sh:ro
 

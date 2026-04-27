@@ -1,11 +1,10 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(ssh minilab:*)",
-      "WebFetch(domain:developers.plane.so)",
-      "Bash(ls:*)"
-    ],
-    "deny": [],
-    "ask": []
-  }
+	"permissions": {
+		"allow": [
+			"Bash(ssh minilab:*)",
+			"WebFetch(domain:developers.plane.so)"
+		],
+		"deny": [],
+		"ask": []
+	}
 }
