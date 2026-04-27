@@ -8,6 +8,8 @@ AutoUpdate=registry
 ContainerName=open-webui
 PublishPort=3040:8080
 Secret=openai_api_key,type=env,target=OPENAI_API_KEY
+Environment=UVICORN_WORKERS=1
+Environment=THREAD_POOL_SIZE=4
 # Persist data on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/open-webui/data:/app/backend/data
 Network=podman
