@@ -25,7 +25,6 @@ Environment=TRUSTED_PROXIES=0.0.0.0/0
 # Worker configuration - reduced for single-user instance
 Environment=WORKER_REPLICAS=1
 Environment=GUNICORN_WORKERS=2
-Environment=CELERYD_OPTS="--autoscale=2"
 
 # Database - using secret for full URL
 Secret=plane_database_url,target=DATABASE_URL,type=env
