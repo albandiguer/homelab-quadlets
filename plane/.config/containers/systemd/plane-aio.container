@@ -56,7 +56,7 @@ Volume=${QUADLET_STORAGE_PATH}/plane/aio-logs:/app/logs
 # This fixes IPv6 connection issues where localhost resolves to ::1
 Volume=/home/podman/opt/homelab/quadlets/plane/Caddyfile:/app/proxy/Caddyfile:ro
 
-e Override start.sh to use external MinIO URL for presigned URLs
+# Override start.sh to use external MinIO URL for presigned URLs
 # This fixes CORS issues by making browser and API use the same external endpoint
 Volume=/home/podman/opt/homelab/quadlets/plane/start.sh:/app/start.sh:ro
 
