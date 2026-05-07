@@ -31,7 +31,7 @@ http://n8n.albandiguer.dev {
 
 http://mcp-hub.lab, 
 http://mcp-hub.lab.albandiguer.dev {
-    reverse_proxy localhost:3000
+    reverse_proxy localhost:3002
 }
 
 http://readeck.lab, 

@@ -1,27 +1,5 @@
 {
 	"servers": {
-		"context7": {
-			"disabled": false,
-			"type": "stdio",
-			"command": "npx",
-			"args": [
-				"-y",
-				"@upstash/context7-mcp",
-				"--api-key",
-				"${CONTEXT7_API_KEY}"
-			],
-			"env": {}
-		},
-		"mcpadvisor": {
-			"disabled": false,
-			"type": "stdio",
-			"command": "npx",
-			"args": [
-				"-y",
-				"@xiaohui-wang/mcpadvisor"
-			],
-			"env": {}
-		},
 		"n8n-mcp": {
 			"command": "npx",
 			"args": [
@@ -32,7 +10,7 @@
 				"MCP_MODE": "stdio",
 				"LOG_LEVEL": "error",
 				"DISABLE_CONSOLE_OUTPUT": "true",
-				"N8N_API_URL": "http://10.88.0.2:5678",
+				"N8N_API_URL": "http://n8n:5678",
 				"N8N_API_KEY": "${N8N_API_KEY}"
 			}
 		}

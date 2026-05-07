@@ -11,6 +11,7 @@ SERVICES=(
 	config
 	homepage
 	linkding
+	mcp-hub
 	mealie
 	n8n
 	open-webui
@@ -21,7 +22,6 @@ SERVICES=(
 INACTIVE_SERVICES=(
 	homepage
 	uptime-kuma
-	mcp-hub
 )
 REPO_DIR="/home/podman/homelab-quadlets"
 REPO_URL="https://github.com/albandiguer/homelab-quadlets.git"
