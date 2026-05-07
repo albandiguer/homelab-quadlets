@@ -17,7 +17,6 @@ SERVICES=(
 	pihole
 	plane
 	readeck
-	uptime-kuma
 )
 INACTIVE_SERVICES=(
 	homepage
