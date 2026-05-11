@@ -16,33 +16,45 @@ http://:80/health {
 http://pihole.lab, 
 http://pihole.lab.albandiguer.dev {
     redir / /admin
-    reverse_proxy localhost:8053
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:8053
 }
 
 http://linkding.lab, http://linkding.lab.albandiguer.dev {
-    reverse_proxy localhost:9090
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:9090
 }
 
 http://n8n.lab, 
 http://n8n.lab.albandiguer.dev, 
 http://n8n.albandiguer.dev {
-    reverse_proxy localhost:5678
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:5678
 }
 
 http://mcp-hub.lab, 
 http://mcp-hub.lab.albandiguer.dev {
-    reverse_proxy localhost:3002
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:3002
 }
 
 http://readeck.lab, 
 http://readeck.lab.albandiguer.dev {
-    reverse_proxy localhost:8000
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:8000
 }
 
 http://mealie.albandiguer.dev,
 http://mealie.lab, 
 http://mealie.lab.albandiguer.dev {
-    reverse_proxy localhost:9000
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:9000
 }
 
 # Uptime kuma
@@ -67,13 +79,17 @@ http://plane-minio.lab.albandiguer.dev {
 # Plane project management
 http://plane.lab,
 http://plane.lab.albandiguer.dev {
-    reverse_proxy localhost:8085
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:8085
 }
 
 # Open WebUI
 http://openwebui.lab,
 http://openwebui.lab.albandiguer.dev {
-    reverse_proxy localhost:3040
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:3040
 }
 
 # OpenClaw (running on theclaw server at 10.0.0.10)
