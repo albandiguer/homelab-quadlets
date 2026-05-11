@@ -1,0 +1,26 @@
+[Unit]
+Description=MCPO - MCP to OpenAPI proxy for n8n
+After=network-online.target
+
+[Container]
+Image=ghcr.io/open-webui/mcpo:main
+AutoUpdate=registry
+ContainerName=mcpo
+PublishPort=3003:8000
+Secret=n8n_api_key,type=env,target=N8N_API_KEY
+Environment=N8N_API_URL=http://n8n:5678
+Exec=--port 8000 -- npx -y n8n-mcp
+Network=podman
+
+HealthCmd=/bin/sh -c "wget --no-verbose --tries=1 --spider http://localhost:8000/docs || exit 1"
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target

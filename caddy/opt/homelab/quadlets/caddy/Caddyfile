@@ -42,6 +42,14 @@ http://mcp-hub.lab.albandiguer.dev {
     reverse_proxy 127.0.0.1:3002
 }
 
+# MCPO - MCP to OpenAPI proxy for Open WebUI
+http://mcpo.lab, 
+http://mcpo.lab.albandiguer.dev {
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:3003
+}
+
 http://readeck.lab, 
 http://readeck.lab.albandiguer.dev {
     # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues

@@ -12,6 +12,7 @@ SERVICES=(
 	homepage
 	linkding
 	mcp-hub
+	mcpo
 	mealie
 	n8n
 	open-webui
