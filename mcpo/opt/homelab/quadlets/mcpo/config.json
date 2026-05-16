@@ -1,15 +1,8 @@
 {
   "mcpServers": {
     "n8n": {
-      "command": "npx",
-      "args": ["-y", "n8n-mcp"],
-      "env": {
-        "MCP_MODE": "stdio",
-        "LOG_LEVEL": "error",
-        "DISABLE_CONSOLE_OUTPUT": "true",
-        "N8N_API_URL": "http://n8n:5678",
-        "N8N_API_KEY": "${N8N_API_KEY}"
-      }
+      "type": "sse",
+      "url": "http://10.0.0.1:3002/mcp"
     }
   }
 }
