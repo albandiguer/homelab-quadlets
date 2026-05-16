@@ -12,6 +12,7 @@ Secret=openai_api_key,type=env,target=OPENAI_API_KEY
 Environment=UVICORN_WORKERS=1
 Environment=THREAD_POOL_SIZE=4
 Environment=ENABLE_MCP=true
+Environment=BYPASS_SSRF_PROTECTION=true
 # Persist data on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/open-webui/data:/app/backend/data
 
