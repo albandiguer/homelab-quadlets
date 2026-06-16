@@ -100,6 +100,14 @@ http://openwebui.lab.albandiguer.dev {
     reverse_proxy 127.0.0.1:3040
 }
 
+# Headroom - LLM token-compression proxy
+http://headroom.lab,
+http://headroom.lab.albandiguer.dev {
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:8787
+}
+
 # OpenClaw (running on theclaw server at 10.0.0.10)
 # http://openclaw.lab,
 # http://openclaw.lab.albandiguer.dev {

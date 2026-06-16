@@ -13,6 +13,7 @@ Rootless Podman containers managed via [Quadlet](https://docs.podman.io/en/lates
 | 🍽️ mealie | Recipes |
 | 📖 readeck | Read-it-later |
 | 🌐 cloudflared | Cloudflare tunnel |
+| 🗜️ headroom | LLM token-compression proxy |
 
 ## Usage
 

@@ -9,6 +9,7 @@ SERVICES=(
 	caddy
 	cloudflared
 	config
+	headroom
 	homepage
 	linkding
 	mcp-hub

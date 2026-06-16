@@ -1,0 +1,25 @@
+[Unit]
+Description=Headroom - LLM token-compression proxy
+After=network-online.target
+
+[Container]
+Image=ghcr.io/chopratejas/headroom:latest
+AutoUpdate=registry
+ContainerName=headroom
+PublishPort=8787:8787
+Environment=HEADROOM_MODE=optimize
+Network=podman
+
+# Health check (image exposes /readyz; slim image ships curl)
+HealthCmd=/bin/sh -c "curl --fail --silent http://localhost:8787/readyz || exit 1"
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target
