@@ -8,6 +8,7 @@ AutoUpdate=registry
 ContainerName=headroom
 PublishPort=8787:8787
 Environment=HEADROOM_MODE=optimize
+Environment=OPENAI_TARGET_API_URL=https://api.deepseek.com
 Network=podman
 
 # Health check (image exposes /readyz; slim image ships curl)
