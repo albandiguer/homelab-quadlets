@@ -1,9 +1,8 @@
 # Caddy reverse proxy configuration
 # All services accessible via *.lab and *.lab.albandiguer.dev domains through VPN
+# HTTPS via internal CA (self-signed) — public TLS handled by Cloudflare Tunnel
 
-# Global options to disable automatic HTTPS
 {
-    auto_https off
     admin off
 }
 
@@ -13,103 +12,44 @@ http://:80/health {
 }
 
 # Active services
-http://pihole.lab, 
-http://pihole.lab.albandiguer.dev {
+pihole.lab, pihole.lab.albandiguer.dev {
+    tls internal
     redir / /admin
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
     reverse_proxy 127.0.0.1:8053
 }
 
-http://linkding.lab, http://linkding.lab.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
+linkding.lab, linkding.lab.albandiguer.dev {
+    tls internal
     reverse_proxy 127.0.0.1:9090
 }
 
-http://n8n.lab, 
-http://n8n.lab.albandiguer.dev, 
-http://n8n.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
+n8n.lab, n8n.lab.albandiguer.dev, n8n.albandiguer.dev {
+    tls internal
     reverse_proxy 127.0.0.1:5678
 }
 
-http://mcp-hub.lab, 
-http://mcp-hub.lab.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
+mcp-hub.lab, mcp-hub.lab.albandiguer.dev {
+    tls internal
     reverse_proxy 127.0.0.1:3002
 }
 
-# MCPO - MCP to OpenAPI proxy for Open WebUI
-http://mcpo.lab, 
-http://mcpo.lab.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
+# MCPO - MCP OpenAPI proxy for Open WebUI
+mcpo.lab, mcpo.lab.albandiguer.dev {
+    tls internal
     reverse_proxy 127.0.0.1:3003
 }
 
-http://readeck.lab, 
-http://readeck.lab.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
+readeck.lab, readeck.lab.albandiguer.dev {
+    tls internal
     reverse_proxy 127.0.0.1:8000
 }
 
-http://mealie.albandiguer.dev,
-http://mealie.lab, 
-http://mealie.lab.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
+mealie.albandiguer.dev, mealie.lab.albandiguer.dev {
+    tls internal
     reverse_proxy 127.0.0.1:9000
 }
 
-# Uptime kuma
-# http://uptime.lab, http://uptime.lab.albandiguer.dev {
-#     reverse_proxy localhost:3001 
-# }
-#
-# http://home.lab, http://homepage.lab, http://homepage.lab.albandiguer.dev {
-#     reverse_proxy 127.0.0.1:3030
-# }
-
-# Plane MinIO S3 storage
-http://plane-minio.lab,
-http://plane-minio.lab.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
-    reverse_proxy 127.0.0.1:9001
-    # Note: CORS headers are handled by MinIO itself for S3 operations
-    # Do not add CORS headers here to avoid duplicates
-}
-
-# Plane project management
-http://plane.lab,
-http://plane.lab.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
-    reverse_proxy 127.0.0.1:8085
-}
-
-# Open WebUI
-http://openwebui.lab,
-http://openwebui.lab.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
-    reverse_proxy 127.0.0.1:3040
-}
-
-# Headroom - LLM token-compression proxy
-http://headroom.lab,
-http://headroom.lab.albandiguer.dev {
-    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
-    # (rootless podman binds published ports to 127.0.0.1 only)
+headroom.lab, headroom.lab.albandiguer.dev {
+    tls internal
     reverse_proxy 127.0.0.1:8787
 }
-
-# OpenClaw (running on theclaw server at 10.0.0.10)
-# http://openclaw.lab,
-# http://openclaw.lab.albandiguer.dev {
-#     reverse_proxy 10.0.0.10:18789
-# }
