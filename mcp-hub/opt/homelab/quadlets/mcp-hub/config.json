@@ -11,7 +11,8 @@
 				"LOG_LEVEL": "error",
 				"DISABLE_CONSOLE_OUTPUT": "true",
 				"N8N_API_URL": "http://10.0.0.1:5678",
-				"N8N_API_KEY": "${N8N_API_KEY}"
+				"N8N_API_KEY": "${N8N_API_KEY}",
+				"WEBHOOK_SECURITY_MODE": "permissive"
 			}
 		}
 	},
