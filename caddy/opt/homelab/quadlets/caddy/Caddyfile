@@ -66,9 +66,11 @@ http://mealie.lab.albandiguer.dev {
 }
 
 # Uptime kuma
-# http://uptime.lab, http://uptime.lab.albandiguer.dev {
-#     reverse_proxy localhost:3001 
-# }
+http://uptime.lab, http://uptime.lab.albandiguer.dev {
+    # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
+    # (rootless podman binds published ports to 127.0.0.1 only)
+    reverse_proxy 127.0.0.1:3001
+}
 #
 # http://home.lab, http://homepage.lab, http://homepage.lab.albandiguer.dev {
 #     reverse_proxy 127.0.0.1:3030
