@@ -14,6 +14,10 @@ Rootless Podman containers managed via [Quadlet](https://docs.podman.io/en/lates
 | 📖 readeck | Read-it-later |
 | 🌐 cloudflared | Cloudflare tunnel |
 | 🗜️ headroom | LLM token-compression proxy |
+| 📐 plane | Project management |
+| 🤖 open-webui | AI chat interface |
+| 🔌 mcpo | MCP-to-OpenAPI proxy for n8n |
+| 📊 uptime-kuma | Monitoring |
 
 ## Usage
 
