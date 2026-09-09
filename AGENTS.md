@@ -4,9 +4,9 @@
 - **Storage:** Persist data via `$QUADLET_STORAGE_PATH` (default `/mnt/minilab-data`). Always mount volumes under `/mnt/`.
 - **Secrets:** Run `./bin/init-secrets.sh` to (re)create Podman secrets interactively.
 - **Deploy (local):** `./bin/deploy-local.sh` pushes to server, runs stow, and daemon-reload. Pass service names to also restart them: `./bin/deploy-local.sh caddy n8n`.
-- **Deploy (server):** `ssh minilab-podman '/home/podman/homelab-quadlets/bin/deploy.sh'`.
+- **Deploy (server):** `ssh minilab '/home/podman/homelab-quadlets/bin/deploy.sh'`.
 - **Restart/Logs:** Use `./bin/restart.sh <service>` for restart, status, and tail.
-- **SSH:** Use `ssh minilab` or `ssh minilab-podman` (configured in ~/.ssh/config). Port 22 is closed on the firewall; access is VPN-only via 10.0.0.1.
+- **SSH:** Use `ssh minilab` or `ssh minilab` (configured in ~/.ssh/config). Port 22 is closed on the firewall; access is VPN-only via 10.0.0.1.
 - **Tests:** No automated suite; validate with `systemctl --user status <service>.service`.
 - **Single Check:** Inspect specific logs via `journalctl --user -u <service>.service -n 50`.
 - **Stow Checks:** Ensure `stow --restow --target="$HOME" <service>` completes cleanly before deployment.

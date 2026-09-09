@@ -19,6 +19,11 @@ Rootless Podman containers managed via [Quadlet](https://docs.podman.io/en/lates
 | 🔌 mcpo | MCP-to-OpenAPI proxy for n8n |
 | 📊 uptime-kuma | Monitoring |
 
+## Network access
+
+- 🔓 **Public** (via Cloudflare Tunnel, no VPN needed): `n8n.albandiguer.dev`, `mealie.albandiguer.dev`
+- 🔒 **VPN-only** (everything else, `*.lab` / `*.lab.albandiguer.dev`): pihole, linkding, readeck, plane, open-webui, headroom, mcpo, mcp-hub, uptime-kuma, caddy
+
 ## Usage
 
 ```bash
