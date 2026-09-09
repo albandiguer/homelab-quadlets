@@ -11,10 +11,10 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 QUADLETS_DIR="$(dirname "$SCRIPT_DIR")"
 
 # Run a command as the podman user on minilab
-# minilab-podman has RemoteCommand/RequestTTY set for interactive use,
+# minilab has RemoteCommand/RequestTTY set for interactive use,
 # so we override those and use sudo -u podman -i for non-interactive commands.
 run_on_minilab() {
-	ssh -o RemoteCommand=none -o RequestTTY=no minilab-podman \
+	ssh -o RemoteCommand=none -o RequestTTY=no minilab \
 		"sudo -u podman XDG_RUNTIME_DIR=/run/user/\$(id -u podman) DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/\$(id -u podman)/bus $1"
 }
 

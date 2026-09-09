@@ -29,22 +29,37 @@ All services communicate via localhost within the pod network.
 
 ## Setup Instructions
 
-### 1. Initialize Secrets
+### 1. Configure & Initialize Secrets
 
-Run the secrets initialization script from your local machine:
+**First**, set the non-secret config values in `~/.config/environment.d/plane.conf`
+on the server. These are consumed by the Quadlet files via `${...}` expansion and
+are NOT handled by `init-secrets.sh`:
+- `PLANE_DB_USER` / `PLANE_DB_NAME` - PostgreSQL role + database (defaults: `plane`/`plane`)
+- `PLANE_MINIO_ROOT_USER` - MinIO root user (default: `minioadmin`) - must match the secret below
+- `PLANE_MQ_USER` - RabbitMQ user (default: `plane`)
+- `PLANE_WEB_URL` / `PLANE_CORS_ALLOWED_ORIGINS` - public Plane URLs
+- `PLANE_EMAIL_*` - optional SMTP for outgoing mail (leave blank to disable)
+
+**Then** run the secrets initialization script on the server (it prompts
+interactively, so run it as the podman user via SSH):
 
 ```bash
-./bin/init-secrets.sh
+ssh minilab '/home/podman/homelab-quadlets/bin/init-secrets.sh'
 ```
 
-This will prompt you for the following Plane secrets:
-- `plane_db_password` - PostgreSQL database password
-- `plane_database_url` - Full database connection URL (format: `postgresql://plane:PASSWORD@localhost:5432/plane`)
+Prompted secrets:
+- `plane_db_password` - PostgreSQL password (also used to build the DB URL below)
+- `plane_mq_password` - RabbitMQ password (also used to build the AMQP URL below)
 - `plane_secret_key` - Application secret (generate with: `openssl rand -hex 32`)
-- `plane_minio_root_password` - MinIO root password
-- `plane_mq_password` - RabbitMQ password for the plane user
-- `plane_mq_amqp_url` - Full AMQP connection URL (format: `amqp://plane:PASSWORD@localhost:5672/plane`)
-- `plane_live_server_secret_key` - Live collaboration server secret (generate with: `openssl rand -hex 32`)
+- `plane_minio_root_password` - MinIO root password (must match `PLANE_MINIO_ROOT_USER`)
+- `plane_live_server_secret_key` - Live collaboration secret (generate with: `openssl rand -hex 32`)
+
+Auto-derived (created for you, never prompted):
+- `plane_database_url` - Built from the DB password; URL-encoded automatically
+- `plane_mq_amqp_url` - Built from the RabbitMQ password
+
+Note: the URL secrets point at the pod's internal hostname (`plane`), e.g.
+`postgresql://plane:<pw>@plane:5432/plane` - don't type these manually.
 
 ### 2. Deploy Services
 
