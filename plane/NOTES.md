@@ -1,4 +1,11 @@
-# Plane - Open Source Project Management
+# Plane (project management)
+
+Plane runs as a **Podman pod** (`plane.pod` → `plane-pod.service`) with its own
+Postgres, Redis, RabbitMQ and MinIO, plus the all-in-one application image. Because it
+is a pod, it is the one service that expands to several systemd units — `bin/restart.sh`
+derives them from the quadlet files (pod first, then its members) and `bin/services.sh`
+lists it as a single entry (`plane`).
+
 
 Plane is an open-source alternative to Jira, Linear, and Monday for project management.
 
@@ -63,18 +70,15 @@ Note: the URL secrets point at the pod's internal hostname (`plane`), e.g.
 
 ### 2. Deploy Services
 
-From your local machine:
-
 ```bash
-# Deploy to server (will pull latest from git and install with stow)
-ssh minilab 'sudo -u podman /home/podman/homelab-quadlets/bin/deploy.sh'
+# Deploy from your machine (push + stow + daemon-reload)
+./bin/deploy-local.sh
 ```
 
 ### 3. Start Services
 
 ```bash
-ssh minilab
-sudo -u podman bash
+ssh minilab                      # already the podman user
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
 # Start the pod and all services
@@ -127,6 +131,33 @@ exit
 podman exec -it plane-api python manage.py migrate
 ```
 
+## Reusing an existing data volume with new secrets
+
+Postgres and RabbitMQ store their credentials **inside the volume**, so regenerating
+the secrets (e.g. after rebuilding the server) leaves the services unable to
+authenticate: `plane-db` logs `password authentication failed for user "plane"` and
+`plane-aio` crash-loops (`api`/`worker`/`beat` exiting with status 1). The env vars
+only take effect on an *empty* data directory, so reset the persisted credentials to
+match the secrets:
+
+```bash
+# Postgres role (local socket auth is trust, so the old password is not needed)
+pw=$(podman secret inspect --showsecret plane_db_password | jq -r '.[0].SecretData')
+podman exec plane-db psql -U plane -d plane -c "ALTER USER plane PASSWORD '$pw';"
+
+# RabbitMQ user (password survives in the mnesia data on the volume)
+mw=$(podman secret inspect --showsecret plane_mq_password | jq -r '.[0].SecretData')
+podman exec plane-mq rabbitmqctl change_password plane "$mw"
+```
+
+Then restart: `./bin/restart.sh plane`. Verify with
+`podman exec plane-aio curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3004/api/instances/`
+(expect `200`).
+
+MinIO keeps its root credentials in the volume as well. It normally starts fine with a
+new password; if it refuses, remove `<volume>/plane/minio/.minio.sys` (objects survive,
+bucket policies must be recreated per step 4).
+
 ## Access
 
 - **Web UI**: http://plane.lab or http://plane.lab.albandiguer.dev (via VPN)
@@ -136,7 +167,7 @@ podman exec -it plane-api python manage.py migrate
 
 ```bash
 # From your local machine
-ssh minilab 'sudo -u podman /home/podman/homelab-quadlets/bin/restart.sh plane-pod'
+./bin/restart.sh plane
 
 # On the server
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
@@ -146,8 +177,7 @@ systemctl --user restart plane-pod.service
 ## View Logs
 
 ```bash
-ssh minilab
-sudo -u podman bash
+ssh minilab                      # already the podman user
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
 # All services
@@ -199,3 +229,14 @@ The startup order is managed automatically by systemd:
 5. **Frontend**: `plane-web`, `plane-space`, `plane-admin`, `plane-live`
 
 The migrator service runs once on startup (Restart=on-failure) to apply database migrations.
+
+## Leftovers from the previous install
+
+`podman ps` shows a `plane-infra` container that is **not** defined by these quadlets
+(the pod defines aio/db/minio/mq/redis only). It comes from the older deployment and
+explains why ports `8085`/`9001` appear on several plane containers. Remove it once you
+are sure nothing depends on it:
+
+```bash
+podman rm -f plane-infra
+```
