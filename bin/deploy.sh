@@ -5,26 +5,9 @@ set -e
 # This script should be run on the server (as podman user)
 # Usage: ssh minilab 'sudo -u podman /home/podman/homelab-quadlets/bin/deploy.sh'
 
-SERVICES=(
-	caddy
-	cloudflared
-	config
-	headroom
-	homepage
-	linkding
-	mcp-hub
-	mcpo
-	mealie
-	n8n
-	open-webui
-	pihole
-	plane
-	readeck
-	uptime-kuma
-)
-INACTIVE_SERVICES=(
-	homepage
-)
+# Service list lives in bin/services.sh (shared with restart.sh)
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/services.sh"
+
 REPO_DIR="/home/podman/homelab-quadlets"
 REPO_URL="https://github.com/albandiguer/homelab-quadlets.git"
 

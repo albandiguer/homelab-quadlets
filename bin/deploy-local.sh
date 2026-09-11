@@ -10,6 +10,9 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 QUADLETS_DIR="$(dirname "$SCRIPT_DIR")"
 
+# Shared service list + name->unit mapping (bin/services.sh)
+source "$SCRIPT_DIR/services.sh"
+
 # Run a command as the podman user on minilab
 # minilab has RemoteCommand/RequestTTY set for interactive use,
 # so we override those and use sudo -u podman -i for non-interactive commands.
@@ -30,15 +33,12 @@ run_on_minilab '/home/podman/homelab-quadlets/bin/deploy.sh'
 # Step 3: Restart services if specified
 if [ $# -gt 0 ]; then
 	for service in "$@"; do
-		# Map directory names to actual systemd service names
-		case "$service" in
-		plane) service_unit="plane-pod" ;;
-		*) service_unit="$service" ;;
-		esac
+		# Map directory names to actual systemd unit names (shared mapping)
+		service_unit="$(unit_of "$service")"
 		echo "Restarting $service..."
-		run_on_minilab "systemctl --user restart ${service_unit}.service"
+		run_on_minilab "systemctl --user restart ${service_unit}"
 		echo "--- Last 20 log lines for $service ---"
-		run_on_minilab "journalctl --user -u ${service_unit}.service -n 20 --no-pager"
+		run_on_minilab "journalctl --user -u ${service_unit} -n 20 --no-pager"
 	done
 fi
 
