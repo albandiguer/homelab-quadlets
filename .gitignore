@@ -1,0 +1,18 @@
+# This repository is public — never commit credentials.
+# Secrets live in Podman secrets on the server (see bin/init-secrets.sh).
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*credentials.json
+wireguard*.conf
+wg*.conf
+
+# Local artefacts / editor cruft
+*.bak
+*.backup
+*.old
+*.swp
+.DS_Store

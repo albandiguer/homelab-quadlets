@@ -10,6 +10,10 @@ opening any inbound firewall port.
 | Secret | `cloudflared_tunnel_token` → `TUNNEL_TOKEN` |
 | Tunnel | `minilab` — id `73c61412-268b-47e6-a0e6-96e2dc2d24ac` (Terraform-managed) |
 
+The tunnel **id is not a secret** — it is published in the public DNS CNAME
+(`<id>.cfargotunnel.com`). The **token** is the credential, and it only ever lives in the
+Podman secret / Terraform state, never in this repo.
+
 ## Where the ingress config lives
 
 The routes are managed **by Terraform**, not the dashboard:

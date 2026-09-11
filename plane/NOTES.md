@@ -230,6 +230,27 @@ The startup order is managed automatically by systemd:
 
 The migrator service runs once on startup (Restart=on-failure) to apply database migrations.
 
+## Known gap: live-server secret is not wired
+
+`init-secrets.sh` creates `plane_live_server_secret_key`, but no quadlet passes it to the
+container, so `start.sh` falls back to its built-in default:
+
+```bash
+# plane/opt/homelab/quadlets/plane/start.sh
+update_env_value "LIVE_SERVER_SECRET_KEY" "${LIVE_SERVER_SECRET_KEY:-htbqvBJAgpm9bzvf3r4urJer0ENReatceh}"
+```
+
+That default is public (it ships with Plane), so the live-collaboration service is
+effectively running with a known key. `SECRET_KEY` is fine — it *is* supplied from the
+`plane_secret_key` secret. To close the gap, add to `plane-aio.container`:
+
+```
+Secret=plane_live_server_secret_key,target=LIVE_SERVER_SECRET_KEY,type=env
+```
+
+and redeploy (`./bin/deploy-local.sh plane`). Alternatively drop the secret from
+`init-secrets.sh` so it is not created unused.
+
 ## Leftovers from the previous install
 
 `podman ps` shows a `plane-infra` container that is **not** defined by these quadlets
