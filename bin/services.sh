@@ -6,6 +6,7 @@ SERVICES=(
 	caddy
 	cloudflared
 	config
+	discourse
 	headroom
 	homepage
 	linkding

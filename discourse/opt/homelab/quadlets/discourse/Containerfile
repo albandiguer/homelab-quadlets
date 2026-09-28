@@ -1,0 +1,46 @@
+# All-in-one Discourse (Rails app + PostgreSQL + Redis in a single container).
+#
+# This is the image that `./launcher bootstrap app` produces from
+# discourse_docker's samples/standalone.yml, rebuilt here from the official
+# templates with `pups`, but without needing Docker/buildx. Quadlet builds it
+# via discourse-build.service (see discourse.build).
+#
+# To update: bump BASE_IMAGE and TEMPLATES_REF together (the release base image
+# and the templates come from the same discourse_docker revision), then:
+#     systemctl --user restart discourse-build.service
+#
+#   BASE_IMAGE    https://hub.docker.com/r/discourse/base  (release = web + pg + redis)
+#   TEMPLATES_REF https://github.com/discourse/discourse_docker  (templates/ + samples/)
+
+ARG BASE_IMAGE=docker.io/discourse/base:2.0.20260928-0031-stable
+FROM ${BASE_IMAGE}
+
+# discourse_docker revision providing templates/ and samples/
+ARG TEMPLATES_REF=8d705a91866c320592ce851f30895ddb4c3e85fe
+
+# Apply the standalone templates. Build-only tags are skipped on purpose:
+#   build      the release base already ships the source, gems and node modules
+#   db         the cluster is initialised on the mounted volume at first boot
+#   migrate    run at container start instead (MIGRATE_ON_BOOT=1)
+#   precompile run at container start instead (PRECOMPILE_ON_BOOT=1)
+RUN set -eux; \
+    git init -q /tmp/dd; \
+    git -C /tmp/dd remote add origin https://github.com/discourse/discourse_docker.git; \
+    git -C /tmp/dd fetch -q --depth 1 origin "${TEMPLATES_REF}"; \
+    git -C /tmp/dd checkout -q FETCH_HEAD; \
+    { \
+      echo "hack: true"; \
+      for t in postgres redis web web.ratelimited; do \
+        echo "_FILE_SEPERATOR_"; \
+        cat "/tmp/dd/templates/${t}.template.yml"; \
+      done; \
+      echo "_FILE_SEPERATOR_"; \
+      cat /tmp/dd/samples/standalone.yml; \
+    } > /tmp/app-config.yml; \
+    cat /tmp/app-config.yml | pups --stdin --skip-tags=build,db,migrate,precompile; \
+    sed -i -e 's@# postgres@sv start postgres || exit 1@' \
+           -e 's@# redis@sv start redis || exit 1@' \
+           /etc/service/unicorn/run; \
+    rm -rf /tmp/dd /tmp/app-config.yml
+
+CMD ["/sbin/boot"]

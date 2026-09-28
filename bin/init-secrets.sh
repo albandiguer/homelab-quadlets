@@ -242,6 +242,11 @@ create_plane_amqp_url "$PLANE_MQ_PW"
 create_secret "plane_live_server_secret_key" "Plane - Live server secret key (generate with: openssl rand -hex 32)"
 echo ""
 
+# Discourse secret
+echo "=== Discourse Credentials ==="
+create_secret "discourse_db_password" "Discourse - PostgreSQL password (used by both the database and the app)"
+echo ""
+
 # OpenAI - transveral usage (mealie and others)
 echo "=== Misc Credentials ==="
 create_secret "openai_api_key" "openai api key"
