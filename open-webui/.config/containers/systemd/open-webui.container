@@ -8,11 +8,17 @@ AutoUpdate=registry
 ContainerName=open-webui
 PublishPort=3040:8080
 Network=podman
+# DNS-enabled bridge shared with searxng (the default podman network has no DNS)
+Network=searxng.network
 Secret=openai_api_key,type=env,target=OPENAI_API_KEY
 Environment=UVICORN_WORKERS=1
 Environment=THREAD_POOL_SIZE=4
 Environment=ENABLE_MCP=true
 Environment=BYPASS_SSRF_PROTECTION=true
+# Web search via the internal SearXNG (base URL only, Open WebUI appends q/format)
+Environment=ENABLE_WEB_SEARCH=true
+Environment=WEB_SEARCH_ENGINE=searxng
+Environment=SEARXNG_QUERY_URL=http://searxng:8080/search
 # Persist data on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/open-webui/data:/app/backend/data
 
