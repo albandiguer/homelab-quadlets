@@ -7,8 +7,9 @@ Image=docker.io/searxng/searxng:latest
 AutoUpdate=registry
 ContainerName=searxng
 # Internal-only: no PublishPort on purpose, the JSON API must stay off the LAN.
-# n8n reaches it as http://searxng:8080 over the shared podman network.
-Network=podman
+# n8n reaches it as http://searxng:8080 over searxng.network; the default
+# podman network has container-name DNS disabled, this bridge has it enabled.
+Network=searxng.network
 Secret=searxng_secret,type=env,target=SEARXNG_SECRET
 Volume=/home/podman/opt/homelab/quadlets/searxng/settings.yml:/etc/searxng/settings.yml:ro
 

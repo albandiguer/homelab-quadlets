@@ -3,14 +3,21 @@
 |         |                                                                     |
 | ------- | ------------------------------------------------------------------- |
 | Image   | `docker.io/searxng/searxng:latest`                                  |
-| Port    | `8080` — **not published**, internal to the `podman` network only   |
+| Port    | `8080` — **not published**, internal to the `searxng.network` bridge only   |
 | Data    | none — config is a read-only mount, cache is ephemeral              |
 | Secrets | `searxng_secret` (`SEARXNG_SECRET`, `openssl rand -hex 32`)         |
-| Access  | `http://searxng:8080` from other containers on the `podman` network |
+| Access  | `http://searxng:8080` reached by `n8n` over the `searxng.network` bridge |
 
 Internal search backend for n8n's web search / AI-agent tool. n8n points at it with
-`SEARXNG_URL=http://searxng:8080` and resolves the name over the shared `podman`
-network — no pod, no published port.
+`SEARXNG_URL=http://searxng:8080` and resolves the name over `searxng.network` — no
+pod, no published port.
+
+## Why a dedicated network
+
+The default `podman` network has container-name DNS **disabled**, so `searxng:8080`
+does not resolve there. `searxng.network` is a small bridge with DNS enabled (Podman
+default) that only `searxng` and `n8n` join; `n8n` stays on the `podman` network as
+well.
 
 ## Gotchas
 
