@@ -94,13 +94,26 @@ http://plane.lab.albandiguer.dev {
     reverse_proxy 127.0.0.1:8085
 }
 
-# Discourse
-http://discourse.lab,
-http://discourse.lab.albandiguer.dev,
+# Discourse - canonical public host. Reachable only through the Cloudflare
+# tunnel, which terminates TLS, so the origin request is always https.
 http://forum.molereskoak.org {
     # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
     # (rootless podman binds published ports to 127.0.0.1 only)
-    reverse_proxy 127.0.0.1:8081
+    reverse_proxy 127.0.0.1:8081 {
+        # Must be https. Discourse marks its session cookie `secure`
+        # (DISCOURSE_FORCE_HTTPS=true) and Rails only writes a secure cookie
+        # when request.ssl? is true - otherwise no session is established and
+        # every login POST dies with "BAD CSRF". Caddy would otherwise send
+        # the scheme of its own hop (http), discarding cloudflared's value.
+        header_up X-Forwarded-Proto https
+    }
+}
+
+# The old VPN names redirect to the canonical host: over plain http the secure
+# session cookie cannot be set, so a login form served there can never work.
+http://discourse.lab,
+http://discourse.lab.albandiguer.dev {
+    redir https://forum.molereskoak.org{uri} permanent
 }
 
 # Open WebUI
