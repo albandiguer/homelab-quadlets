@@ -45,6 +45,19 @@ RUN set -eux; \
            /etc/service/unicorn/run; \
     rm -rf /tmp/dd /tmp/app-config.yml
 
+# The skipped "build" block is also what symlinks the app's write paths onto the /shared
+# volume (upstream's `ln -s /shared/{uploads,backups,tmp,logs} $home/...`). Without them
+# Discourse writes uploads into the container's writable layer, which Quadlet throws away
+# on every restart: the files vanish while the DB rows (uploads, theme screenshots,
+# avatars, attachments) stay behind, so images render as broken/empty boxes.
+# The /shared directories themselves are created and chowned at boot by
+# /etc/runit/1.d/00-ensure-links; only the symlinks are missing here.
+RUN ln -sfn /shared/uploads /shared/backups /var/www/discourse/public/ \
+ && ln -sfn /shared/tmp/backups /shared/tmp/restores /var/www/discourse/tmp/ \
+ && ln -sfn /shared/log/rails/production.log /shared/log/rails/production_errors.log \
+            /shared/log/rails/unicorn.stdout.log /shared/log/rails/unicorn.stderr.log \
+            /shared/log/rails/sidekiq.log /var/www/discourse/log/
+
 # Build the Ember frontend bundle (frontend/discourse/dist -> vendor.js, chunk-*.js).
 # The skipped "build" tag would have run this, and upstream's boot precompile
 # deliberately skips the Ember CLI (`SKIP_EMBER_CLI_COMPILE=1` in /etc/service/unicorn/run),
