@@ -23,6 +23,8 @@ ARG TEMPLATES_REF=8d705a91866c320592ce851f30895ddb4c3e85fe
 #   db         the cluster is initialised on the mounted volume at first boot
 #   migrate    run at container start instead (MIGRATE_ON_BOOT=1)
 #   precompile run at container start instead (PRECOMPILE_ON_BOOT=1)
+# The Ember frontend is NOT covered by any of those: the boot hook always passes
+# SKIP_EMBER_CLI_COMPILE=1, so it is built explicitly in the step below.
 RUN set -eux; \
     git init -q /tmp/dd; \
     git -C /tmp/dd remote add origin https://github.com/discourse/discourse_docker.git; \
@@ -42,5 +44,13 @@ RUN set -eux; \
            -e 's@# redis@sv start redis || exit 1@' \
            /etc/service/unicorn/run; \
     rm -rf /tmp/dd /tmp/app-config.yml
+
+# Build the Ember frontend bundle (frontend/discourse/dist -> vendor.js, chunk-*.js).
+# The skipped "build" tag would have run this, and upstream's boot precompile
+# deliberately skips the Ember CLI (`SKIP_EMBER_CLI_COMPILE=1` in /etc/service/unicorn/run),
+# so without it no page can render: the layout's asset_path("vendor.js") raises
+# ActionView::Template::Error and visitors get the 500 "unexpected problem" page.
+# Pulls the prebuilt bundle for this exact version+commit (fast) unless the JS tree is dirty.
+RUN SKIP_DB_AND_REDIS=1 su discourse -c 'cd /var/www/discourse && bundle exec rake assets:precompile:build'
 
 CMD ["/sbin/boot"]
