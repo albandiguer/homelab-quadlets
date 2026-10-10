@@ -183,6 +183,21 @@ Then run the migration step (already part of boot, but if you want it explicit):
 time; a no-op rebuild with layer cache takes seconds. It is *not* covered by
 `AutoUpdate=registry` — updates go through the Containerfile bump above.
 
+**The Ember frontend bundle is built into the image, never on boot.** The web template's
+boot hook precompiles with `SKIP_EMBER_CLI_COMPILE=1`, so a container start only
+regenerates the Rails/propshaft assets — `frontend/discourse/dist` (vendor.js, chunk-*.js)
+and the plugin bundles in `app/assets/generated` must already exist. The Containerfile's
+`rake assets:precompile:build` step provides them, downloading Discourse's prebuilt bundle
+for the pinned version+commit (falling back to `pnpm build` when the JS tree is dirty).
+Omit it and **every page render fails** with
+`ActionView::Template::Error: The asset 'vendor.js' was not found in the load path`
+(HTTP 500), while `/srv/status` still answers 200 — so the health check, `podman ps` and
+Uptime Kuma all stay green on a completely broken site. Always check a real page:
+
+```bash
+ssh minilab 'curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8081/'
+```
+
 **Assets recompile on every container start.** Quadlet runs the container with `--rm`,
 so a restart creates a fresh writable layer and `/var/www/discourse/public/assets` is
 rebuilt (`PRECOMPILE_ON_BOOT=1`). On the ARM CAX11 this is roughly a minute. Keep
@@ -203,7 +218,8 @@ discourse_docker commit at the same time.
 ./bin/restart.sh discourse
 ssh minilab 'systemctl --user status discourse.service discourse-build.service'
 ssh minilab 'podman ps --format "{{.Names}}\t{{.Status}}"'
-ssh minilab 'curl -fsS http://127.0.0.1:8081/srv/status'   # expect 200
+ssh minilab 'curl -fsS http://127.0.0.1:8081/srv/status'   # expect 200 (health only)
+ssh minilab 'curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8081/'  # expect 200 (page render)
 dig +short @10.0.0.1 discourse.lab                         # -> 10.0.0.1 (VPN)
 curl -sI http://discourse.lab | head -1                    # expect HTTP/1.1 200
 ssh minilab 'podman exec discourse ls /shared'             # postgres_data, uploads, ...
