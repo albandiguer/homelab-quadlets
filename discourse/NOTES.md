@@ -147,6 +147,21 @@ printf '%s' "$BREVO_KEY" | ssh minilab 'podman secret create discourse_smtp_pass
 unset BREVO_KEY                      # then redeploy: ./bin/deploy-local.sh discourse
 ```
 
+**Secret values must not end in a newline.** The image's `/etc/runit/1.d/copy-env` copies
+every `DISCOURSE_*` variable into `config/discourse.conf` as `key = '<value>'`, one per
+line. A trailing newline inside the secret splits that line, and `GlobalSetting`'s parser
+(`app/models/global_setting.rb`) then falls back to its *unquoted* branch, which keeps the
+opening quote: the app authenticates with `'<key>`, Brevo answers `535 5.7.8 Authentication
+failed`, and everything else — env var, podman secret, Brevo key, IP allowlist — looks
+correct. Confirm the three agree before blaming Brevo:
+
+```bash
+podman exec discourse rails runner 'require "digest"; [ENV["DISCOURSE_SMTP_PASSWORD"], ActionMailer::Base.smtp_settings[:password]].each { |v| puts Digest::SHA256.hexdigest(v.to_s) }'
+```
+
+Fix: recreate the secret without the newline, then restart discourse — the container
+rewrites `discourse.conf` at boot (`./bin/restart.sh discourse`).
+
 Brevo's own "connect Cloudflare" integration created the zone's DKIM CNAMEs
 (`brevo1/2._domainkey` → `*.dkim.brevo.com`), the `_dmarc` TXT and its brand/tracking
 hosts (`mail`, `r.mail`, `img.mail`) directly — those records are **not** in Terraform.
