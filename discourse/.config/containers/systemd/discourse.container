@@ -1,0 +1,47 @@
+[Unit]
+Description=Discourse forum (all-in-one: web + PostgreSQL + Redis)
+After=network-online.target
+
+[Container]
+# Built locally from Containerfile by discourse-build.service (discourse.build)
+Image=discourse.build
+ContainerName=discourse
+PublishPort=8080:80
+
+# Everything (web app, PostgreSQL and Redis) runs in this one container
+Environment=DISCOURSE_HOSTNAME=${DISCOURSE_HOSTNAME}
+Environment=DISCOURSE_DEVELOPER_EMAILS=${DISCOURSE_DEVELOPER_EMAILS}
+# Caddy / Cloudflare terminate TLS, the container speaks plain HTTP
+Environment=DISCOURSE_FORCE_HTTPS=false
+
+# Initialise the database on the mounted volume, then migrate + precompile on boot
+Environment=CREATE_DB_ON_BOOT=1
+Environment=MIGRATE_ON_BOOT=1
+Environment=PRECOMPILE_ON_BOOT=1
+
+# Tuning for the small CAX11 instance
+Environment=UNICORN_WORKERS=1
+Environment=UNICORN_SIDEKIQS=1
+
+# PostgreSQL password (also used for the local "discourse" role)
+Secret=discourse_db_password,target=DISCOURSE_DB_PASSWORD,type=env
+
+# All state lives on the external volume: uploads, backups, DB cluster, redis AOF
+Volume=${QUADLET_STORAGE_PATH}/discourse/shared:/shared
+Volume=${QUADLET_STORAGE_PATH}/discourse/log:/var/log
+
+# No nested quotes: Quadlet mis-serialises them into --health-cmd
+HealthCmd=curl --fail --silent http://127.0.0.1/srv/status
+HealthStartPeriod=600s
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+
+[Service]
+Restart=always
+RestartSec=30
+# First boot inits the DB, migrates and precompiles assets (slow on ARM)
+TimeoutStartSec=1800
+
+[Install]
+WantedBy=multi-user.target default.target

@@ -1,0 +1,4 @@
+[Build]
+ImageTag=localhost/discourse-standalone:stable
+File=Containerfile
+SetWorkingDirectory=/home/podman/opt/homelab/quadlets/discourse

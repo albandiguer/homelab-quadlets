@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Forum">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a6d8ef"/>
+      <stop offset="1" stop-color="#eaf7fc"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f80b8"/>
+      <stop offset="1" stop-color="#4aa0cf"/>
+    </linearGradient>
+    <linearGradient id="rock" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5b544b"/>
+      <stop offset="0.55" stop-color="#7a7266"/>
+      <stop offset="1" stop-color="#4a443c"/>
+    </linearGradient>
+    <clipPath id="round"><circle cx="256" cy="256" r="232"/></clipPath>
+  </defs>
+
+  <circle cx="256" cy="256" r="244" fill="#ffffff" stroke="#14532d" stroke-width="16"/>
+  <g clip-path="url(#round)">
+    <!-- sky -->
+    <rect x="0" y="0" width="512" height="512" fill="url(#sky)"/>
+    <circle cx="392" cy="112" r="32" fill="#f7c948"/>
+
+    <!-- birds -->
+    <path transform="translate(150,150)" d="M-42 0 Q-26 -30 -8 -2 Q0 -30 8 -2 Q26 -30 42 0 Q17 4 0 15 Q-17 4 -42 0 Z" fill="#2b3a45"/>
+    <path transform="translate(300,118) scale(0.8)" d="M-42 0 Q-26 -30 -8 -2 Q0 -30 8 -2 Q26 -30 42 0 Q17 4 0 15 Q-17 4 -42 0 Z" fill="#2b3a45"/>
+
+    <!-- sea -->
+    <rect x="0" y="300" width="512" height="110" fill="url(#sea)"/>
+    <path d="M0 300 q64 -12 128 0 t128 0 t128 0 t128 0 v12 H0 Z" fill="#57a8d6" opacity="0.85"/>
+
+    <!-- Deux Jumeaux: the twin islets -->
+    <path d="M236 404 L242 350 Q244 318 264 314 Q284 318 286 350 L292 404 Z" fill="url(#rock)"/>
+    <path d="M300 404 L306 344 Q308 310 328 306 Q348 310 350 344 L356 404 Z" fill="url(#rock)"/>
+    <path d="M242 350 Q244 318 264 314 L262 330 Q252 334 250 356 L246 382 Z" fill="#938b7d" opacity="0.55"/>
+    <path d="M306 344 Q308 310 328 306 L326 324 Q316 328 314 352 L310 382 Z" fill="#938b7d" opacity="0.55"/>
+    <ellipse cx="264" cy="402" rx="34" ry="6" fill="#ffffff" opacity="0.5"/>
+    <ellipse cx="328" cy="402" rx="34" ry="6" fill="#ffffff" opacity="0.5"/>
+
+    <!-- beach -->
+    <path d="M0 402 Q256 384 512 402 L512 512 L0 512 Z" fill="#efdcae"/>
+    <path d="M0 402 Q256 384 512 402 L512 414 Q256 396 0 414 Z" fill="#e0c893"/>
+    <path d="M0 402 Q256 384 512 402" fill="none" stroke="#ffffff" stroke-width="5" opacity="0.85"/>
+
+    <!-- flowers on the sand -->
+    <g>
+      <line x1="300" y1="480" x2="300" y2="452" stroke="#2f6f2f" stroke-width="5"/>
+      <g fill="#ffffff">
+        <circle cx="300" cy="440" r="7"/>
+        <circle cx="300" cy="464" r="7"/>
+        <circle cx="288" cy="452" r="7"/>
+        <circle cx="312" cy="452" r="7"/>
+      </g>
+      <circle cx="300" cy="452" r="5" fill="#f7c948"/>
+    </g>
+    <g>
+      <line x1="242" y1="490" x2="242" y2="468" stroke="#2f6f2f" stroke-width="5"/>
+      <g fill="#ffffff">
+        <circle cx="242" cy="458" r="6"/>
+        <circle cx="242" cy="478" r="6"/>
+        <circle cx="232" cy="468" r="6"/>
+        <circle cx="252" cy="468" r="6"/>
+      </g>
+      <circle cx="242" cy="468" r="4" fill="#e8674f"/>
+    </g>
+
+    <!-- forbidden tractopelle sign -->
+    <g transform="translate(168,398)">
+      <rect x="-4" y="36" width="8" height="38" rx="2" fill="#7c7c7c"/>
+      <circle r="38" fill="#ffffff" stroke="#d7263d" stroke-width="10"/>
+      <g fill="#1b1b1b" transform="scale(0.9)">
+        <circle cx="-15" cy="12" r="9"/>
+        <circle cx="15" cy="12" r="9"/>
+        <rect x="-24" y="-3" width="48" height="13" rx="3"/>
+        <rect x="-4" y="-17" width="16" height="15" rx="2"/>
+        <path d="M22 0 L30 -10 L35 -6 L28 3 Z"/>
+        <path d="M28 3 L37 7 L34 14 L25 9 Z"/>
+        <path d="M33 8 L41 6 L41 15 L32 15 Z"/>
+      </g>
+      <rect x="-36" y="-6" width="72" height="12" rx="2" fill="#d7263d" transform="rotate(45)"/>
+    </g>
+  </g>
+</svg>

@@ -41,6 +41,7 @@ containers mount (see the mcpo exception in `mcpo/NOTES.md`).
 | 📖 readeck | 8000 | `readeck.lab` | — | [NOTES](readeck/NOTES.md) |
 | 🤖 open-webui | 3040 | `openwebui.lab` | `openai_api_key` | [NOTES](open-webui/NOTES.md) |
 | 🗜️ headroom | 8787 | `headroom.lab` | — | [NOTES](headroom/NOTES.md) |
+| 💬 discourse | 8080 | `discourse.lab` | `discourse_db_password` | [NOTES](discourse/NOTES.md) — locally built (`.build`) |
 | 🔌 mcp-hub | 3002 | `mcp-hub.lab` | `n8n_api_key` | [NOTES](mcp-hub/NOTES.md) |
 | 🧩 mcpo | 3003 | `mcpo.lab` | — | [NOTES](mcpo/NOTES.md) |
 | 📊 uptime-kuma | 3001 | `uptime.lab` | — | [NOTES](uptime-kuma/NOTES.md) |
