@@ -95,6 +95,9 @@ therefore at `${QUADLET_STORAGE_PATH}/discourse/shared/log/rails/production.log`
 
 - `discourse_db_password` (created by `bin/init-secrets.sh`) → `DISCOURSE_DB_PASSWORD`,
   used both to create the local `discourse` PostgreSQL role and by the app to connect.
+  The container's `/usr/local/bin/create_db` re-applies it to the role on **every** boot
+  (`CREATE_DB_ON_BOOT=1`), so a rotated or regenerated secret is reconciled automatically —
+  no manual `ALTER USER`, unlike Plane.
 
 Non-secret config lives in `.config/environment.d/discourse.conf`
 (`DISCOURSE_HOSTNAME`, `DISCOURSE_DEVELOPER_EMAILS`); systemd expands it into the unit.
