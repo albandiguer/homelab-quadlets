@@ -50,6 +50,12 @@ DNS. Symptom in every service, not just this one: nothing can write to the volum
 **4. Web password.** Comes from the `pihole_webpassword` secret; updating the secret
 and restarting the container applies the new password (no `pihole -a -p` needed).
 
+**5. Flushing the DNS cache (v6).** `pihole restartdns` no longer exists in v6, and
+`podman kill --signal HUP pihole` kills FTL (PID 1 exits, systemd restarts the
+container after a few seconds of no DNS). To drop the cache — e.g. a stale NXDOMAIN
+cached *before* a record was created, which dnsmasq keeps for the SOA minimum, up to
+an hour — use `./bin/restart.sh pihole`.
+
 ## Verify
 
 ```bash
