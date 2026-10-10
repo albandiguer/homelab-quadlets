@@ -18,6 +18,7 @@ SERVICES=(
 	pihole
 	plane
 	readeck
+	searxng
 	uptime-kuma
 )
 

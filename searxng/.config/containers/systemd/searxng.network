@@ -1,0 +1,9 @@
+[Unit]
+Description=SearXNG internal network (DNS-enabled)
+Wants=network-online.target
+
+[Network]
+NetworkName=searxng.network
+Driver=bridge
+Subnet=10.90.0.0/24
+Gateway=10.90.0.1

@@ -151,6 +151,11 @@ create_secret "n8n_basic_auth_password" "n8n basic auth password"
 create_secret "n8n_api_key" "n8n API key"
 echo ""
 
+# SearXNG secret (signs cookies/CSRF; generate with: openssl rand -hex 32)
+echo "=== SearXNG ==="
+create_secret "searxng_secret" "SearXNG secret key (generate with: openssl rand -hex 32)"
+echo ""
+
 # Linkding secrets
 echo "=== Linkding Credentials ==="
 create_secret "linkding_superuser_name" "Linkding superuser name"

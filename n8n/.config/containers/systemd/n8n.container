@@ -21,9 +21,13 @@ Environment=WEBHOOK_URL=https://n8n.albandiguer.dev/
 Environment=N8N_EDITOR_BASE_URL=http://n8n.lab.albandiguer.dev/
 Environment=N8N_SECURE_COOKIE=false
 Environment=N8N_PROXY_HOPS=1
+# Internal search backend (searxng.container, shared podman network)
+Environment=SEARXNG_URL=http://searxng:8080
 # Persist data on configured storage volume
 Volume=${QUADLET_STORAGE_PATH}/n8n/data:/home/node/.n8n
 Network=podman
+# DNS-enabled bridge shared with searxng (the default podman network has no DNS)
+Network=searxng.network
 
 # Health check
 HealthCmd=/bin/sh -c "wget --no-verbose --tries=1 --spider http://localhost:5678/healthz || exit 1"
