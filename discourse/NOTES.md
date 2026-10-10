@@ -31,21 +31,39 @@ templates) on top of the official release base image
 ## Hostname / access
 
 Discourse has **one canonical hostname** (`DISCOURSE_HOSTNAME`): it builds every link,
-asset URL and email with it, regardless of the Host header used to reach it. Until the
-public domain is decided it is `discourse.lab` — both VPN names below proxy to the same
-container and land on it:
+asset URL and email with it, regardless of the Host header used to reach it.
 
-- **VPN**: `http://discourse.lab` and `http://discourse.lab.albandiguer.dev`.
+- **Public**: `https://forum.molereskoak.org` — Cloudflare Tunnel → Caddy → here.
+- **VPN**: `http://discourse.lab` and `http://discourse.lab.albandiguer.dev` still route
+  to the same container, but everything they render links to the public host.
 
 nginx listens on `80` in the container, published as `8081` (host port 8080 belongs to
-searxng, which binds `127.0.0.1:8080`); Caddy routes both
-names to it. Caddy/Cloudflare terminate TLS, so the container serves plain HTTP
-(`DISCOURSE_FORCE_HTTPS=false`).
+searxng, which binds `127.0.0.1:8080`); Caddy routes all three names to it.
+Caddy/Cloudflare terminate TLS, so the container serves plain HTTP and
+`DISCOURSE_FORCE_HTTPS=true` makes it emit `https://` links.
 
-### Changing the canonical host later
+### Public exposure
 
-Moving to the public domain is **not a rebuild** — `DISCOURSE_HOSTNAME` is just an env
-var. Set it to the public host, restart, then rewrite the already-baked links:
+Exposed exactly like n8n/mealie — through the Terraform-managed Cloudflare Tunnel,
+**not** with a Pi-hole *split-horizon* record (a local DNS override that answers the
+public name with `10.0.0.1` for VPN clients only, so the same name resolves differently
+inside and outside the VPN):
+
+1. `DISCOURSE_HOSTNAME=forum.molereskoak.org` in `.config/environment.d/discourse.conf`.
+2. `infra/main.tf`: ingress route `{ hostname = "forum.molereskoak.org", service = "http://localhost:80" }`
+   before the `http_status:404` catch-all, plus the proxied CNAME
+   `cloudflare_dns_record.forum_public` → `<tunnel-id>.cfargotunnel.com` in the
+   `molereskoak.org` zone (`var.cloudflare_zone_id_molereskoak`).
+3. The Caddyfile vhost `http://forum.molereskoak.org` → `127.0.0.1:8081`.
+
+Public requests reach Caddy on port 80, and the tunnel catch-all still 404s everything
+else. Step 2 needs `terraform apply` (user-run); 1 and 3 ship with a normal deploy:
+`./bin/deploy-local.sh caddy discourse`.
+
+### Changing the canonical host again
+
+Not a rebuild — `DISCOURSE_HOSTNAME` is just an env var. Set it, restart, then rewrite
+the already-baked links:
 
 ```bash
 podman exec -it discourse rake posts:rebake
@@ -53,28 +71,7 @@ podman exec -it discourse rake posts:rebake
 
 Uploads live under `/shared/uploads` and are referenced by path, so they survive the
 move. Only post HTML baked with the old host (and any emails) keeps the old name until
-rebaked. Do the switch together with the DNS/tunnel steps below.
-
-### Public exposure (TODO, not done here)
-
-No public domain yet. When there is one, expose it exactly like n8n/mealie — through the
-Terraform-managed Cloudflare Tunnel, **not** with a Pi-hole *split-horizon* record
-(a local DNS override that answers the public name with `10.0.0.1` for VPN clients
-only, so the same name resolves differently inside and outside the VPN):
-
-1. Set `DISCOURSE_HOSTNAME` to the public host and redeploy (Discourse bakes it into
-   links and emails).
-2. Add the host to the `cloudflare_zero_trust_tunnel_cloudflared_config` ingress in
-   `infra/main.tf` (before the `http_status:404` catch-all):
-   ```hcl
-   { hostname = "forum.example.org", service = "http://localhost:80" }
-   ```
-3. Add a proxied CNAME (`name = "forum"`) to `<tunnel-id>.cfargotunnel.com` in the
-   same zone.
-4. Enable Cloudflare **Always Use HTTPS** and **Automatic HTTPS Rewrites**.
-
-Public requests then reach Caddy on port 80 like n8n does, and the tunnel catch-all
-still 404s everything else.
+rebaked.
 
 ## Data (all on the external volume)
 
@@ -132,38 +129,29 @@ No SMTP is configured, so account emails are not sent. Create the admin from the
 ssh minilab 'podman exec -it discourse rake admin:create'
 ```
 
-### Adding SMTP (recommended before opening signups)
+### Outbound mail (Brevo SMTP)
 
-Discourse only sends transactional mail (signup, password reset, notifications), so a
-free tier is plenty. Good options, all offering authenticated SMTP relay:
+Wired, using Brevo's free tier (300/day) — enough, since Discourse only sends
+transactional mail (signup, password reset, notifications). The non-secret half lives in
+`.config/environment.d/discourse.conf` (`DISCOURSE_SMTP_ADDRESS=smtp-relay.brevo.com`,
+port `587`, user `bd983a001@smtp-brevo.com`, `DISCOURSE_NOTIFICATION_EMAIL`); the SMTP key
+is the `discourse_smtp_password` Podman secret, injected as `DISCOURSE_SMTP_PASSWORD` by
+`discourse.container`. `smtp_*` are ordinary Discourse site settings, so the
+`DISCOURSE_`-prefixed env vars are the override mechanism (same as `FORCE_HTTPS`).
 
-| Provider | Free tier | Notes |
-|---|---|---|
-| Brevo (ex-Sendinblue) | 300 emails/day | best-known free tier, plain SMTP |
-| Mailjet | 200/day, 6 000/month | SMTP + API |
-| Resend | 100/day, 3 000/month | developer-focused, SMTP available |
-| SendGrid | 100/day | long-standing, SMTP + API |
+To (re)set the key:
 
-Whichever you pick, verify the sending domain (SPF + DKIM DNS records in the Cloudflare
-zone) and use its SMTP host on port 587 below.
-
-Add to `.config/environment.d/discourse.conf` and reference them from
-`discourse.container`:
-
-```ini
-DISCOURSE_SMTP_ADDRESS=smtp.example.com
-DISCOURSE_SMTP_PORT=587
-DISCOURSE_SMTP_USER_NAME=forum@example.com
+```bash
+read -rs BREVO_KEY
+printf '%s' "$BREVO_KEY" | ssh minilab 'podman secret create discourse_smtp_password -'
+unset BREVO_KEY                      # then redeploy: ./bin/deploy-local.sh discourse
 ```
 
-```
-Environment=DISCOURSE_SMTP_ADDRESS=${DISCOURSE_SMTP_ADDRESS}
-Environment=DISCOURSE_SMTP_PORT=${DISCOURSE_SMTP_PORT}
-Environment=DISCOURSE_SMTP_USER_NAME=${DISCOURSE_SMTP_USER_NAME}
-Secret=discourse_smtp_password,target=DISCOURSE_SMTP_PASSWORD,type=env
-```
-
-(add `discourse_smtp_password` to `bin/init-secrets.sh` if you do).
+Brevo refuses senders it has not verified, and `notification_email` is
+`noreply@molereskoak.org`, so **verify the molereskoak.org domain in Brevo** (Senders →
+Domains) and add the SPF/DKIM records it prints to the Cloudflare zone — until then every
+message is rejected ("sender not valid"). Adding a single verified gmail sender instead
+works for a first test, but then `DISCOURSE_NOTIFICATION_EMAIL` has to point at it.
 
 ## Updating Discourse
 

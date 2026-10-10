@@ -250,6 +250,7 @@ echo ""
 # Discourse secret
 echo "=== Discourse Credentials ==="
 create_secret "discourse_db_password" "Discourse - PostgreSQL password (used by both the database and the app)"
+create_secret "discourse_smtp_password" "Discourse - Brevo SMTP key (smtp-relay.brevo.com, login bd983a001@smtp-brevo.com)"
 echo ""
 
 # OpenAI - transveral usage (mealie and others)

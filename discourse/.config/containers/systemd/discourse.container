@@ -11,8 +11,16 @@ PublishPort=8081:80
 # Everything (web app, PostgreSQL and Redis) runs in this one container
 Environment=DISCOURSE_HOSTNAME=${DISCOURSE_HOSTNAME}
 Environment=DISCOURSE_DEVELOPER_EMAILS=${DISCOURSE_DEVELOPER_EMAILS}
-# Caddy / Cloudflare terminate TLS, the container speaks plain HTTP
-Environment=DISCOURSE_FORCE_HTTPS=false
+# Outbound mail (Brevo). SMTP_* are Discourse site settings set via env;
+# the key is a Podman secret so it never lands in this repo.
+Environment=DISCOURSE_SMTP_ADDRESS=${DISCOURSE_SMTP_ADDRESS}
+Environment=DISCOURSE_SMTP_PORT=${DISCOURSE_SMTP_PORT}
+Environment=DISCOURSE_SMTP_USER_NAME=${DISCOURSE_SMTP_USER_NAME}
+Environment=DISCOURSE_NOTIFICATION_EMAIL=${DISCOURSE_NOTIFICATION_EMAIL}
+Secret=discourse_smtp_password,target=DISCOURSE_SMTP_PASSWORD,type=env
+# Caddy / Cloudflare terminate TLS, the container speaks plain HTTP, so force
+# Discourse to build https:// links and set secure cookies itself.
+Environment=DISCOURSE_FORCE_HTTPS=true
 
 # Initialise the database on the mounted volume, then migrate + precompile on boot
 Environment=CREATE_DB_ON_BOOT=1
