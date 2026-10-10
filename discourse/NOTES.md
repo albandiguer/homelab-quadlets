@@ -147,6 +147,13 @@ printf '%s' "$BREVO_KEY" | ssh minilab 'podman secret create discourse_smtp_pass
 unset BREVO_KEY                      # then redeploy: ./bin/deploy-local.sh discourse
 ```
 
+Brevo's own "connect Cloudflare" integration created the zone's DKIM CNAMEs
+(`brevo1/2._domainkey` → `*.dkim.brevo.com`), the `_dmarc` TXT and its brand/tracking
+hosts (`mail`, `r.mail`, `img.mail`) directly — those records are **not** in Terraform.
+The SPF TXT *is* (`cloudflare_dns_record.forum_spf` at the apex), because the integration
+does not add one. If Brevo's integration ever adds its own, delete ours: two `v=spf1`
+records at the same name are an SPF `permerror`.
+
 Brevo refuses senders it has not verified, and `notification_email` is
 `noreply@molereskoak.org`, so **verify the molereskoak.org domain in Brevo** (Senders →
 Domains) and add the SPF/DKIM records it prints to the Cloudflare zone — until then every
