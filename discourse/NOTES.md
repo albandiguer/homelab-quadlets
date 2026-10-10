@@ -37,7 +37,8 @@ container and land on it:
 
 - **VPN**: `http://discourse.lab` and `http://discourse.lab.albandiguer.dev`.
 
-nginx listens on `80` in the container, published as `127.0.0.1:8080`; Caddy routes both
+nginx listens on `80` in the container, published as `8081` (host port 8080 belongs to
+searxng, which binds `127.0.0.1:8080`); Caddy routes both
 names to it. Caddy/Cloudflare terminate TLS, so the container serves plain HTTP
 (`DISCOURSE_FORCE_HTTPS=false`).
 
@@ -202,7 +203,7 @@ discourse_docker commit at the same time.
 ./bin/restart.sh discourse
 ssh minilab 'systemctl --user status discourse.service discourse-build.service'
 ssh minilab 'podman ps --format "{{.Names}}\t{{.Status}}"'
-ssh minilab 'curl -fsS http://127.0.0.1:8080/srv/status'   # expect 200
+ssh minilab 'curl -fsS http://127.0.0.1:8081/srv/status'   # expect 200
 dig +short @10.0.0.1 discourse.lab                         # -> 10.0.0.1 (VPN)
 curl -sI http://discourse.lab | head -1                    # expect HTTP/1.1 200
 ssh minilab 'podman exec discourse ls /shared'             # postgres_data, uploads, ...

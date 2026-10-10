@@ -99,7 +99,7 @@ http://discourse.lab,
 http://discourse.lab.albandiguer.dev {
     # Use 127.0.0.1 instead of localhost to avoid IPv6 connection issues
     # (rootless podman binds published ports to 127.0.0.1 only)
-    reverse_proxy 127.0.0.1:8080
+    reverse_proxy 127.0.0.1:8081
 }
 
 # Open WebUI

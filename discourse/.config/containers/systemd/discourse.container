@@ -6,7 +6,7 @@ After=network-online.target
 # Built locally from Containerfile by discourse-build.service (discourse.build)
 Image=discourse.build
 ContainerName=discourse
-PublishPort=8080:80
+PublishPort=8081:80
 
 # Everything (web app, PostgreSQL and Redis) runs in this one container
 Environment=DISCOURSE_HOSTNAME=${DISCOURSE_HOSTNAME}
