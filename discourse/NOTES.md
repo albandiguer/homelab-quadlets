@@ -167,21 +167,39 @@ Secret=discourse_smtp_password,target=DISCOURSE_SMTP_PASSWORD,type=env
 
 ## Updating Discourse
 
-The base image and the templates are **pinned** in the Containerfile so the build is
-reproducible. To move to a newer release, bump both together and rebuild:
+The app source **ships inside the base image**, so the update is one thing: bump
+`BASE_IMAGE` and rebuild. Anything written about "bump `TEMPLATES_REF` too" is only about
+the runtime (`PG_MAJOR` in the image must match the paths in the templates, currently 18).
 
-```ini
-ARG BASE_IMAGE=docker.io/discourse/base:2.0.<new-timestamp>-stable
-ARG TEMPLATES_REF=<new-discourse_docker-commit>
-```
+The admin banner names release tags (`2026.8.x`, `2026.9.0`, …) that have **no base image**:
+upstream's launcher reaches those with a `git fetch/checkout` plus `bundle install` +
+`pnpm install` at build time, which this Containerfile deliberately skips (the `build` tag).
+Only two flavours are published:
+
+| Tag | App source |
+|---|---|
+| `2.0.<date>-<time>-stable` | ESR / `release/2026.7` — conservative, gets patches only |
+| `2.0.<date>-<time>` | `main` / tests-passed — newest code (what this repo runs) |
+
+So the whole update procedure is:
 
 ```bash
-./bin/deploy-local.sh discourse       # or: git pull + stow on the server
-ssh minilab 'systemctl --user restart discourse-build.service discourse.service'
+# 1. Safety net: migrations are one-way, the dump is the only rollback.
+ssh minilab 'podman exec discourse su postgres -c "pg_dump -Fc -d discourse" > /tmp/pre.dump'
+ssh minilab 'podman cp /tmp/pre.dump discourse:/shared/backups/ && rm /tmp/pre.dump'
+
+# 2. Bump the tag in Containerfile, deploy, and build (the running forum keeps serving).
+./bin/deploy-local.sh
+ssh minilab 'systemctl --user start discourse-build.service'
+
+# 3. Switch over: the new container migrates and precompiles on boot (~2-5 min).
+ssh minilab 'systemctl --user restart discourse.service'
 ```
 
-Then run the migration step (already part of boot, but if you want it explicit):
-`podman exec -it discourse rake db:migrate` — normally unnecessary.
+Verify with `podman exec -it discourse rails runner 'puts Discourse::VERSION::STRING'`, a
+page render (not just `/srv/status`) and the theme previews. The old image stays on disk;
+`podman image prune` reclaims it once the upgrade looks good — rolling *back* means
+restoring the dump, not the image.
 
 ## Gotchas
 
