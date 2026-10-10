@@ -30,23 +30,23 @@ containers mount (see the mcpo exception in `mcpo/NOTES.md`).
 
 ## Services
 
-| Service | Port | Access | Secrets | Notes |
-|---|---|---|---|---|
-| 🛡️ pihole | 53 (DNS), 8053 (admin) | `pihole.lab` | `pihole_webpassword` | [NOTES](pihole/NOTES.md) |
-| 🔀 caddy | 80 | host network | — | [NOTES](caddy/NOTES.md) |
-| ☁️ cloudflared | — | outbound tunnel | `cloudflared_tunnel_token` | [NOTES](cloudflared/NOTES.md) |
-| ⚡ n8n | 5678 | `n8n.lab`, `n8n.albandiguer.dev` | `n8n_basic_auth_*` | [NOTES](n8n/NOTES.md) |
-| 🔖 linkding | 9090 | `linkding.lab` | `linkding_superuser_*` | [NOTES](linkding/NOTES.md) |
-| 🍽️ mealie | 9000 | `mealie.lab`, `mealie.albandiguer.dev` | `mealie_default_*`, `openai_api_key` | [NOTES](mealie/NOTES.md) |
-| 📖 readeck | 8000 | `readeck.lab` | — | [NOTES](readeck/NOTES.md) |
-| 🤖 open-webui | 3040 | `openwebui.lab` | `openai_api_key` | [NOTES](open-webui/NOTES.md) |
-| 🗜️ headroom | 8787 | `headroom.lab` | — | [NOTES](headroom/NOTES.md) |
-| 💬 discourse | 8080 | `discourse.lab` | `discourse_db_password` | [NOTES](discourse/NOTES.md) — locally built (`.build`) |
-| 🔌 mcp-hub | 3002 | `mcp-hub.lab` | `n8n_api_key` | [NOTES](mcp-hub/NOTES.md) |
-| 🧩 mcpo | 3003 | `mcpo.lab` | — | [NOTES](mcpo/NOTES.md) |
-| 📊 uptime-kuma | 3001 | `uptime.lab` | — | [NOTES](uptime-kuma/NOTES.md) |
-| 📐 plane | 8085 (+ MinIO 9001) | `plane.lab`, `plane-minio.lab` | `plane_*` (7 secrets) | [NOTES](plane/NOTES.md) |
-| 🏠 homepage | 3030 | `homepage.lab` | — | [NOTES](homepage/NOTES.md) — inactive |
+| Service        | Port                   | Access                                 | Secrets                              | Notes                                                  |
+| -------------- | ---------------------- | -------------------------------------- | ------------------------------------ | ------------------------------------------------------ |
+| 🛡️ pihole      | 53 (DNS), 8053 (admin) | `pihole.lab`                           | `pihole_webpassword`                 | [NOTES](pihole/NOTES.md)                               |
+| 🔀 caddy       | 80                     | host network                           | —                                    | [NOTES](caddy/NOTES.md)                                |
+| ☁️ cloudflared | —                      | outbound tunnel                        | `cloudflared_tunnel_token`           | [NOTES](cloudflared/NOTES.md)                          |
+| ⚡ n8n         | 5678                   | `n8n.lab`, `n8n.albandiguer.dev`       | `n8n_basic_auth_*`                   | [NOTES](n8n/NOTES.md)                                  |
+| 🔖 linkding    | 9090                   | `linkding.lab`                         | `linkding_superuser_*`               | [NOTES](linkding/NOTES.md)                             |
+| 🍽️ mealie      | 9000                   | `mealie.lab`, `mealie.albandiguer.dev` | `mealie_default_*`, `openai_api_key` | [NOTES](mealie/NOTES.md)                               |
+| 📖 readeck     | 8000                   | `readeck.lab`                          | —                                    | [NOTES](readeck/NOTES.md)                              |
+| 🤖 open-webui  | 3040                   | `openwebui.lab`                        | `openai_api_key`                     | [NOTES](open-webui/NOTES.md)                           |
+| 🗜️ headroom    | 8787                   | `headroom.lab`                         | —                                    | [NOTES](headroom/NOTES.md)                             |
+| 💬 discourse   | 8080                   | `discourse.lab`                        | `discourse_db_password`              | [NOTES](discourse/NOTES.md) — locally built (`.build`) |
+| 🔌 mcp-hub     | 3002                   | `mcp-hub.lab`                          | `n8n_api_key`                        | [NOTES](mcp-hub/NOTES.md)                              |
+| 🧩 mcpo        | 3003                   | `mcpo.lab`                             | —                                    | [NOTES](mcpo/NOTES.md)                                 |
+| 📊 uptime-kuma | 3001                   | `uptime.lab`                           | —                                    | [NOTES](uptime-kuma/NOTES.md)                          |
+| 📐 plane       | 8085 (+ MinIO 9001)    | `plane.lab`, `plane-minio.lab`         | `plane_*` (7 secrets)                | [NOTES](plane/NOTES.md)                                |
+| 🏠 homepage    | 3030                   | `homepage.lab`                         | —                                    | [NOTES](homepage/NOTES.md) — inactive                  |
 
 `config` is not a service: it only ships `environment.d/quadlets.conf`
 (`QUADLET_STORAGE_PATH`), consumed by the other units through `${...}` expansion.
