@@ -11,8 +11,18 @@
 #
 #   BASE_IMAGE    https://hub.docker.com/r/discourse/base  (release = web + pg + redis)
 #   TEMPLATES_REF https://github.com/discourse/discourse_docker  (templates/ + samples/)
+#
+# BASE_IMAGE carries the app source *and* the gems/node_modules built for it, so bumping
+# this tag IS the Discourse update. Two flavours exist and nothing else:
+#   2.0.<date>-<time>-stable  ESR/stable branch (release/2026.7 -> 2026.7.3)
+#   2.0.<date>-<time>         main / tests-passed (-> 2026.10.0-latest)
+# There is no base image for the in-between release tags (2026.8.x, 2026.9.0): upstream's
+# launcher reaches those with a `git fetch/checkout` plus bundle+pnpm install at build
+# time, and this Containerfile deliberately skips that (`build` tag). So: want the newest
+# code -> plain tag, want the conservative ESR line -> -stable. Once the DB has migrated
+# forward you cannot go back, only restore a dump.
 
-ARG BASE_IMAGE=docker.io/discourse/base:2.0.20260928-0031-stable
+ARG BASE_IMAGE=docker.io/discourse/base:2.0.20261010-0030
 FROM ${BASE_IMAGE}
 
 # discourse_docker revision providing templates/ and samples/
