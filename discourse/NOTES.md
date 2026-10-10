@@ -85,7 +85,11 @@ still 404s everything else.
   - `uploads/`, `backups/`, `log/`, `state/`, `tmp/`
 - `${QUADLET_STORAGE_PATH}/discourse/log` → `/var/log` (nginx / postgres / redis logs)
 
-`deploy.sh` creates these directories from the `Volume=` lines.
+`deploy.sh` creates these directories from the `Volume=` lines. Inside the container the app
+does not write to them directly: the image symlinks `public/uploads`, `public/backups`,
+`tmp/{backups,restores}` and `log/*.log` onto `/shared/...` (upstream does this in its
+`build` block, which this Containerfile skips, so it is done explicitly). Rails logs are
+therefore at `${QUADLET_STORAGE_PATH}/discourse/shared/log/rails/production.log`.
 
 ## Secrets
 
@@ -183,6 +187,21 @@ Then run the migration step (already part of boot, but if you want it explicit):
 time; a no-op rebuild with layer cache takes seconds. It is *not* covered by
 `AutoUpdate=registry` — updates go through the Containerfile bump above.
 
+**Uploads live on the volume only through symlinks — a missing one silently loses files.**
+`public/uploads` must be a symlink to `/shared/uploads`; if it is (or becomes) a real
+directory, Discourse happily writes avatars, attachments and theme screenshots into the
+container's writable layer, which Quadlet discards on every restart. The DB rows survive,
+so you get broken images and empty theme previews instead of an error. Check with:
+
+```bash
+ssh minilab 'podman exec discourse readlink /var/www/discourse/public/uploads'  # /shared/uploads
+```
+
+Same for `public/backups`, `tmp/{backups,restores}` and `log/*.log`. The screenshots of
+the bundled Foundation/Horizon themes (`themes/*/screenshots/*.png`, content-addressed
+under `/uploads/default/original/1X/<sha1>.png`) are restored by copying the repo file to
+its sha1 path on the volume — re-importing the theme does not recreate a missing file.
+
 **The Ember frontend bundle is built into the image, never on boot.** The web template's
 boot hook precompiles with `SKIP_EMBER_CLI_COMPILE=1`, so a container start only
 regenerates the Rails/propshaft assets — `frontend/discourse/dist` (vendor.js, chunk-*.js)
@@ -223,6 +242,8 @@ ssh minilab 'curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8081/' 
 dig +short @10.0.0.1 discourse.lab                         # -> 10.0.0.1 (VPN)
 curl -sI http://discourse.lab | head -1                    # expect HTTP/1.1 200
 ssh minilab 'podman exec discourse ls /shared'             # postgres_data, uploads, ...
+ssh minilab 'podman exec discourse readlink /var/www/discourse/public/uploads'  # /shared/uploads
+ssh minilab 'podman exec discourse ls /shared/uploads/default/original/1X'      # theme screenshots
 ```
 
 ## Logo
