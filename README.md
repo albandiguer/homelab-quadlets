@@ -21,7 +21,6 @@ bin/
   deploy-local.sh    # local: git push minilab + deploy.sh (+ restart named services)
   restart.sh         # restart one/many services, or everything (no args)
   init-secrets.sh    # create/update Podman secrets (interactive)
-  prune-images.sh    # clean dangling images
 ```
 
 `deploy.sh` stows two things per service: the unit into `~/.config/containers/systemd/`
