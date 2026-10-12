@@ -11,14 +11,12 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/services.sh"
 REPO_DIR="/home/podman/homelab-quadlets"
 REPO_URL="https://github.com/albandiguer/homelab-quadlets.git"
 
-# Clone or update repository
+# GitHub is a backup, not a deployment source. A live server is updated by
+# `git push minilab main` from deploy-local.sh, which writes the working tree
+# via receive.denyCurrentBranch=updateInstead. Bootstrap from backup only.
 if [ ! -d "$REPO_DIR" ]; then
-	echo "Cloning repository..."
+	echo "Cloning repository (bootstrap from backup)..."
 	git clone "$REPO_URL" "$REPO_DIR"
-else
-	echo "Updating repository..."
-	cd "$REPO_DIR"
-	git pull
 fi
 
 cd "$REPO_DIR"

@@ -17,7 +17,7 @@ Owned by the [`homelab`](https://github.com/albandiguer/homelab) repo as a submo
 config/.config/environment.d/quadlets.conf         # QUADLET_STORAGE_PATH=/mnt/minilab-data
 bin/
   services.sh        # single source of truth: SERVICES + INACTIVE_SERVICES
-  deploy.sh          # server-side: git pull, stow, create volume dirs, daemon-reload
+  deploy.sh          # server-side: stow, create volume dirs, daemon-reload
   deploy-local.sh    # local: git push minilab + deploy.sh (+ restart named services)
   restart.sh         # restart one/many services, or everything (no args)
   init-secrets.sh    # create/update Podman secrets (interactive)
