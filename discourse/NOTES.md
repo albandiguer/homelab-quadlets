@@ -151,9 +151,23 @@ unset BREVO_KEY                      # then redeploy: ./bin/deploy-local.sh disc
 every `DISCOURSE_*` variable into `config/discourse.conf` as `key = '<value>'`, one per
 line. A trailing newline inside the secret splits that line, and `GlobalSetting`'s parser
 (`app/models/global_setting.rb`) then falls back to its *unquoted* branch, which keeps the
-opening quote: the app authenticates with `'<key>`, Brevo answers `535 5.7.8 Authentication
-failed`, and everything else — env var, podman secret, Brevo key, IP allowlist — looks
-correct. Confirm the three agree before blaming Brevo:
+opening quote: the value the app actually reads is `'<secret>`. The Containerfile now
+patches `copy-env` to `strip` each value, so images built since then cannot hit this — but
+the stored secret should still be recreated without the newline (the patch does not rewrite
+it, and peer/MD5 auth elsewhere uses the raw value).
+
+Two symptoms, same cause:
+
+- **Backups**: every automatic DB backup dies at `Dumping the public schema` with
+  `EXCEPTION: pg_dump failed`. The dump command interpolates the password as
+  `PGPASSWORD='<value>'`; with the extra leading quote that is a shell *"Unterminated quoted
+  string"*, so `pg_dump` exits instantly and writes nothing. Check
+  `grep -c '^db_password' /var/www/discourse/config/discourse.conf` — it must be **1** line.
+- **Mail**: the app authenticates to Brevo with `'<key>`, Brevo answers `535 5.7.8
+  Authentication failed`, and everything else — env var, podman secret, Brevo key, IP
+  allowlist — looks correct.
+
+Confirm the secret and what the app sees agree before blaming Brevo or Postgres:
 
 ```bash
 podman exec discourse rails runner 'require "digest"; [ENV["DISCOURSE_SMTP_PASSWORD"], ActionMailer::Base.smtp_settings[:password]].each { |v| puts Digest::SHA256.hexdigest(v.to_s) }'

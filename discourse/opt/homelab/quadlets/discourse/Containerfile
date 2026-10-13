@@ -35,6 +35,12 @@ ARG TEMPLATES_REF=8d705a91866c320592ce851f30895ddb4c3e85fe
 #   precompile run at container start instead (PRECOMPILE_ON_BOOT=1)
 # The Ember frontend is NOT covered by any of those: the boot hook always passes
 # SKIP_EMBER_CLI_COMPILE=1, so it is built explicitly in the step below.
+#
+# copy-env is patched because upstream writes every DISCOURSE_* value verbatim into
+# config/discourse.conf as `key = '<value>'`. A Podman secret that ends in a newline
+# splits that line, GlobalSetting's parser then keeps the opening quote (db_password
+# becomes `'<pw>`), and the backup job's `PGPASSWORD='<pw>'` is a shell syntax error:
+# every automatic DB backup dies at "Dumping the public schema" with `pg_dump failed`.
 RUN set -eux; \
     git init -q /tmp/dd; \
     git -C /tmp/dd remote add origin https://github.com/discourse/discourse_docker.git; \
@@ -53,6 +59,7 @@ RUN set -eux; \
     sed -i -e 's@# postgres@sv start postgres || exit 1@' \
            -e 's@# redis@sv start redis || exit 1@' \
            /etc/service/unicorn/run; \
+    sed -i 's@#{v}@#{v.to_s.strip}@' /etc/runit/1.d/copy-env; \
     rm -rf /tmp/dd /tmp/app-config.yml
 
 # The skipped "build" block is also what symlinks the app's write paths onto the /shared
